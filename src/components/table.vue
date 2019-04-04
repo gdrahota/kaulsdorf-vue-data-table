@@ -17,23 +17,14 @@
             <div class="grid-item select-control" :style="{ height: getCellHeight }">
               <v-checkbox v-model="selected" :value="rowId"></v-checkbox>
             </div>
-            <template v-if="item.children.showChildren">
+            <template v-if="records[rowId].showChildren">
               <div
-                v-for="(child, childPos) of item.children"
+                v-for="(child, childPos) of records[rowId].children"
                 :key="'child-' + childPos"
                 class="grid-item child"
                 :style="{ height: getChildCellHeight }"
               />
             </template>
-            <template v-if="items[rowId].showChildren">
-              <div
-                v-for="(child, childPos) of items[rowId].children"
-                :key="'child-' + childPos"
-                class="grid-item child"
-                :style="{ height: getChildCellHeight }"
-              />
-            </template>
-
           </div>
         </div>
       </template>
@@ -41,7 +32,7 @@
       <template v-if="allowChildren">
         <div
           class="grid-col grid-col--fixed-left"
-          :style="{ width: '55px', minWidth: '55px', left: selectedRowsCb ? '50px' : 0 }"
+          :style="{ width: '100px', minWidth: '100px', left: selectedRowsCb ? '50px' : 0 }"
         >
           <div class="grid-item grid-item--header" :style="{ height: getHeaderHeight + 'px' }"></div>
 
@@ -51,16 +42,16 @@
             @click="() => markRow(rowId)"
             :class="{ marked: marked === rowId }"
           >
-            <div class="grid-item child-control pt-3" :style="{ height: getCellHeight }">
-              <v-btn icon @click="() => toggleShowChildren(items[rowId])">
-                <v-icon v-if="items[rowId].children.showChildren">expand_less</v-icon>
+            <div class="grid-item child-control pt-3 pl-1" :style="{ height: getCellHeight }">
+              <v-chip label>{{records[rowId].children.length}}</v-chip>
+              <v-btn icon outline @click="() => toggleShowChildren(records[rowId])">
+                <v-icon v-if="records[rowId].showChildren">expand_less</v-icon>
                 <v-icon v-else>chevron_right</v-icon>
               </v-btn>
-              {{items[rowId].showChildren}}
             </div>
-            <template v-if="items[rowId].showChildren">
+            <template v-if="records[rowId].showChildren">
               <div
-                v-for="(child, childPos) of items[rowId].children"
+                v-for="(child, childPos) of records[rowId].children"
                 :key="'child-' + childPos"
                 class="grid-item child"
                 :style="{ height: getChildCellHeight }"
@@ -95,30 +86,30 @@
         </vue-drag-resize>
 
         <template
-          v-for="(item, rowId) of Object.values(items)"
+          v-for="(item, rowId) of records"
         >
           <div @click="setActive(null)" :key="'wert' + rowId" :class="{ marked: marked === rowId }">
             <div :style="{ height: getCellHeight }" class="grid-item">
               <slot
                 name="cell"
-                :props="{ item, colId, rowId, value: item[Object.keys(item)[colId]], header, height: getCellHeight }"
+                :props="{ item: records[rowId], colId, rowId, value: records[rowId][header.attr], header, height: getCellHeight }"
               >
                 {{ item[header.attr] }}
               </slot>
             </div>
 
             <template
-              v-if="allowChildren && items[rowId].showChildren && items[rowId].children"
+              v-if="allowChildren && records[rowId].showChildren && records[rowId].children"
             >
               <div
-                v-for="(child, idx) of items[rowId].children"
+                v-for="(child, idx) of records[rowId].children"
                 :key="'child_' + idx"
                 :style="{ height: getChildCellHeight }"
                 class="grid-item child"
               >
                 <slot
                   name="child"
-                  :props="{ item: items[rowId], colId, rowId, value: items[rowId][header.attr], header, child }"
+                  :props="{ item: records[rowId], colId, rowId, value: records[rowId][header.attr], header, child }"
                 >
                   <div>child {{ child[header.attr] }}</div>
                 </slot>
@@ -150,17 +141,13 @@
         return typeof this.headerHeight === "number" ? this.headerHeight : parseInt(this.headerHeight)
       },
       hasChildren () {
-        return this.items.some(item => item.children)
+        return this.records.some(item => item.children)
       },
-      records () {
-        return this.items.map(i => {
-          return { ...i, showChildren: false }
-        })
-      }
     },
 
     data () {
       return {
+        records: this.items,
         resizeCol: null,
         marked: null,
         selected: [],
@@ -193,11 +180,8 @@
         this.$emit('columnResized', payload)
       },
       toggleShowChildren (item) {
-        if (item.showChildren) {
-          item.showChildren = false
-        } else {
-          item.showChildren = true
-        }
+        this.$emit('toggleSelectCb', { ...item, showChildren: !item.showChildren })
+        item.showChildren = !item.showChildren
       },
       markRow (rowId) {
         this.marked = rowId

@@ -14,6 +14,7 @@
           allowChildren
           @columnResized="resizeColumn"
           :selectedRowsCb="selectedRowsCb"
+          @toggleSelectCb="item => toggleSelectCb(item)"
         >
           <div slot="header-cell" slot-scope="{ props }" class="title">{{ props.header.text }}</div>
           <cell slot="cell" slot-scope="{ props }" :props="props"/>
@@ -72,6 +73,9 @@
       },
       selectedRowsCb (data) {
         console.log('data', data)
+      },
+      toggleSelectCb(){
+
       }
     }
   }
