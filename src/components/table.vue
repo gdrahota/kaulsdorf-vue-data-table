@@ -9,7 +9,7 @@
           <div class="grid-item grid-item--header" :style="{ height: getHeaderHeight + 'px' }"></div>
 
           <div
-            v-for="(item, rowId) of Object.values(items)"
+            v-for="(item, rowId) of records"
             :key="'showSelect-' + rowId"
             @click="() => markRow(rowId)"
             :class="{ marked: marked === rowId }"
@@ -17,7 +17,7 @@
             <div class="grid-item select-control" :style="{ height: getCellHeight }">
               <v-checkbox v-model="selected" :value="rowId"></v-checkbox>
             </div>
-            <template v-if="item.showChildren">
+            <template v-if="item.children.showChildren">
               <div
                 v-for="(child, childPos) of item.children"
                 :key="'child-' + childPos"
@@ -25,6 +25,15 @@
                 :style="{ height: getChildCellHeight }"
               />
             </template>
+            <template v-if="items[rowId].showChildren">
+              <div
+                v-for="(child, childPos) of items[rowId].children"
+                :key="'child-' + childPos"
+                class="grid-item child"
+                :style="{ height: getChildCellHeight }"
+              />
+            </template>
+
           </div>
         </div>
       </template>
@@ -37,22 +46,21 @@
           <div class="grid-item grid-item--header" :style="{ height: getHeaderHeight + 'px' }"></div>
 
           <div
-            v-for="(item, rowId) of Object.values(items)"
+            v-for="(item, rowId) of records"
             :key="'showChild-' + rowId"
             @click="() => markRow(rowId)"
             :class="{ marked: marked === rowId }"
           >
             <div class="grid-item child-control pt-3" :style="{ height: getCellHeight }">
-              <v-btn v-if="item.children" icon @click="() => toggleShowChildren(item)">
-                <v-icon v-if="item.showChildren">expand_less</v-icon>
+              <v-btn icon @click="() => toggleShowChildren(items[rowId])">
+                <v-icon v-if="items[rowId].children.showChildren">expand_less</v-icon>
                 <v-icon v-else>chevron_right</v-icon>
               </v-btn>
-
-              <span class="number-of-children">{{item.children.length}}</span>
+              {{items[rowId].showChildren}}
             </div>
-            <template v-if="item.showChildren">
+            <template v-if="items[rowId].showChildren">
               <div
-                v-for="(child, childPos) of item.children"
+                v-for="(child, childPos) of items[rowId].children"
                 :key="'child-' + childPos"
                 class="grid-item child"
                 :style="{ height: getChildCellHeight }"
@@ -100,17 +108,17 @@
             </div>
 
             <template
-              v-if="allowChildren && item.showChildren && item.children"
+              v-if="allowChildren && items[rowId].showChildren && items[rowId].children"
             >
               <div
-                v-for="(child, idx) of item.children"
+                v-for="(child, idx) of items[rowId].children"
                 :key="'child_' + idx"
                 :style="{ height: getChildCellHeight }"
                 class="grid-item child"
               >
                 <slot
                   name="child"
-                  :props="{ item, colId, rowId, value: item[Object.keys(item)[colId]], header, child }"
+                  :props="{ item: items[rowId], colId, rowId, value: items[rowId][header.attr], header, child }"
                 >
                   <div>child {{ child[header.attr] }}</div>
                 </slot>
@@ -143,6 +151,11 @@
       },
       hasChildren () {
         return this.items.some(item => item.children)
+      },
+      records () {
+        return this.items.map(i => {
+          return { ...i, showChildren: false }
+        })
       }
     },
 
@@ -180,10 +193,10 @@
         this.$emit('columnResized', payload)
       },
       toggleShowChildren (item) {
-        if (item.children) {
-          item.showChildren = !item.showChildren
-        } else {
+        if (item.showChildren) {
           item.showChildren = false
+        } else {
+          item.showChildren = true
         }
       },
       markRow (rowId) {
