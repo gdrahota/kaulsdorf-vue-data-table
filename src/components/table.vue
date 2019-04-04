@@ -164,7 +164,7 @@
       },
       getLeftPosition (colPosition) {
         let left = 0
-        left += this.selectedRowsCb ? 50 : 0
+        left += this.selectedRowsCb ? 95 : 0
         left += this.allowChildren ? 55 : 0
         for (let i = 0; i <= (colPosition - 1); i++) {
           left += this.headers[i].width
@@ -250,6 +250,12 @@
         type: Function,
         default: null
       },
+    },
+
+    watch: {
+      items (items) {
+        this.records = items
+      }
     }
   }
 </script>
