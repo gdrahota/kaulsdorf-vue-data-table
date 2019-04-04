@@ -56,7 +56,7 @@
 
     computed: {
       value () {
-        return Object.values(this.props.item)[this.props.colId]
+        return this.props.item[this.props.header.attr]
       }
     },
 

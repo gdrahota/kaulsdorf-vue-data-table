@@ -47,7 +47,8 @@
                 <v-icon v-if="item.showChildren">expand_less</v-icon>
                 <v-icon v-else>chevron_right</v-icon>
               </v-btn>
-              <v-icon>add</v-icon>
+
+              <span class="number-of-children">{{item.children.length}}</span>
             </div>
             <template v-if="item.showChildren">
               <div
@@ -94,7 +95,7 @@
                 name="cell"
                 :props="{ item, colId, rowId, value: item[Object.keys(item)[colId]], header, height: getCellHeight }"
               >
-                {{ Object.values(item)[colId] }}
+                {{ item[header.attr] }}
               </slot>
             </div>
 
@@ -111,7 +112,7 @@
                   name="child"
                   :props="{ item, colId, rowId, value: item[Object.keys(item)[colId]], header, child }"
                 >
-                  <div>child {{ child[Object.keys(item)[colId]] }}</div>
+                  <div>child {{ child[header.attr] }}</div>
                 </slot>
               </div>
             </template>
@@ -332,5 +333,12 @@
 
   .active {
     border: 2px solid crimson;
+  }
+
+  .number-of-children {
+    width: 20px;
+    text-align: center;
+    position: relative;
+    float: left;
   }
 </style>
