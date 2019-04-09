@@ -74,10 +74,6 @@
     },
 
     props: {
-      row: {
-        type: [Number, String, Object, Array, Boolean],
-        required: false
-      },
       props: {
         type: [Number, String, Object, Array, Boolean],
         required: false

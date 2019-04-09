@@ -6,7 +6,7 @@
           class="grid-col grid-col--fixed-left"
           :style="{ width: '50px', minWidth: '50px', left: 0 }"
         >
-          <div class="grid-item grid-item--header" :style="{ height: getHeaderHeight + 'px' }"></div>
+          <div class="grid-item grid-item--header" :style="{ height: getHeaderHeight + 'px', padding: '10px' }"></div>
 
           <div
             v-for="(item, rowId) of records"
@@ -14,16 +14,20 @@
             @click="() => markRow(rowId)"
             :class="{ marked: marked === rowId }"
           >
-            <div class="grid-item select-control" :style="{ height: getCellHeight }">
-              <v-checkbox v-model="selected" :value="rowId"></v-checkbox>
+            <div class="grid-item select-control" :style="{ height: getCellHeight, padding: '10px' }">
+              <v-checkbox
+                v-model="selected"
+                :value="rowId"
+                :style="{ top: '-18px', position: 'relative' }"
+              ></v-checkbox>
             </div>
             <template v-if="records[rowId].showChildren">
               <div
                 v-for="(child, childPos) of records[rowId].children"
                 :key="'child-' + childPos"
                 class="grid-item child"
-                :style="{ height: getChildCellHeight }"
-              />
+                :style="{ height: getChildCellHeight, padding: '10px' }"
+              ></div>
             </template>
           </div>
         </div>
@@ -43,8 +47,18 @@
             :class="{ marked: marked === rowId }"
           >
             <div class="grid-item child-control pt-3 pl-1" :style="{ height: getCellHeight }">
-              <v-chip label>{{records[rowId].children.length}}</v-chip>
-              <v-btn icon outline @click="() => toggleShowChildren(records[rowId])">
+              <v-chip
+                :style="{ top: '-13px', position: 'relative' }"
+                label
+              >{{records[rowId].children.length}}
+              </v-chip>
+              <v-btn
+                icon
+                outline
+                small
+                @click="() => toggleShowChildren(records[rowId])"
+                :style="{ top: '-13px', position: 'relative' }"
+              >
                 <v-icon v-if="records[rowId].showChildren">expand_less</v-icon>
                 <v-icon v-else>chevron_right</v-icon>
               </v-btn>
@@ -71,16 +85,16 @@
           :isActive="resizeCol === colId"
           :isDraggable="false"
           :w="header.width"
+          :minw="header.minWidth"
           :h="getHeaderHeight"
           :parentLimitation="false"
-          :minw="header.minWidth"
           :sticks="['mr']"
-          @resizing="square => resize(colId, square)"
+          @resizing="square => resize(header.attr, square)"
           @clicked.stop="() => setActive(colId)"
           @resizestop="() => setActive(null)"
           class="grid-item grid-item--header"
         >
-          <slot name="header-cell" :props="{ header }">
+          <slot name="header-cell" :props="{ header, sorting }">
             <span>{{ header.text }}</span>
           </slot>
         </vue-drag-resize>
@@ -92,7 +106,14 @@
             <div :style="{ height: getCellHeight }" class="grid-item">
               <slot
                 name="cell"
-                :props="{ item: records[rowId], colId, rowId, value: records[rowId][header.attr], header, height: getCellHeight }"
+                :props="{
+                item: records[rowId],
+                colId,
+                rowId,
+                value: records[rowId][header.attr],
+                header,
+                height: getCellHeight,
+                sorting: sorting }"
               >
                 {{ item[header.attr] }}
               </slot>
@@ -109,9 +130,16 @@
               >
                 <slot
                   name="child"
-                  :props="{ item: records[rowId], colId, rowId, value: records[rowId][header.attr], header, child }"
+                  :props="{
+                    item: item,
+                    colId,
+                    rowId,
+                    value: child[header.attr],
+                    header,
+                    child
+                  }"
                 >
-                  <div>child {{ child[header.attr] }}</div>
+                  <div>{{ child[header.attr] }}</div>
                 </slot>
               </div>
             </template>
@@ -176,7 +204,6 @@
           col,
           width: newRect.width
         }
-
         this.$emit('columnResized', payload)
       },
       toggleShowChildren (item) {
@@ -240,7 +267,7 @@
       },
       headerHeight: {
         type: [Number, String],
-        default: 55
+        default: 40
       },
       allowChildren: {
         type: Boolean,
@@ -249,6 +276,15 @@
       selectedRowsCb: {
         type: Function,
         default: null
+      },
+      sorting: {
+        type: Object,
+        default: () => {
+          return {
+            descending: null,
+            sortBy: null
+          }
+        }
       },
     },
 
@@ -296,10 +332,11 @@
     background-color: white;
     border-right: 1px solid gray;
     border-bottom: 1px solid gray;
-    padding: 10px;
+    overflow-x: hidden;
   }
 
   .child-control {
+    overflow: hidden;
     padding: unset;
   }
 
@@ -343,5 +380,9 @@
     text-align: center;
     position: relative;
     float: left;
+  }
+
+  .select-control {
+    overflow: hidden;
   }
 </style>
