@@ -36,7 +36,7 @@
       <template v-if="allowChildren">
         <div
           class="grid-col grid-col--fixed-left"
-          :style="{ width: '110px', minWidth: '110px', left: selectedRowsCb ? '50px' : 0 }"
+          :style="{ width: '110px', minWidth: '110px', left: selectedRowsCb ? '50px' : 0, zIndex: 100 }"
         >
           <div class="grid-item grid-item--header" :style="{ height: getHeaderHeight + 'px' }"></div>
 
