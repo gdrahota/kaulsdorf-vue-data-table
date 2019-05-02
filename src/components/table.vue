@@ -36,9 +36,9 @@
       <template v-if="allowChildren">
         <div
           class="grid-col grid-col--fixed-left"
-          :style="{ width: '110px', minWidth: '110px', left: selectedRowsCb ? '50px' : 0, zIndex: 100 }"
+          :style="{ width: '110px', minWidth: '110px', left: selectedRowsCb ? '50px' : 0 }"
         >
-          <div class="grid-item grid-item--header" :style="{ height: getHeaderHeight + 'px' }"></div>
+          <div class="grid-item grid-item--header" :style="{ height: getHeaderHeight + 'px', zIndex: '100!important' }"></div>
 
           <div
             v-for="(item, rowId) of records"
