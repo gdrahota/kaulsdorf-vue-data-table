@@ -36,7 +36,7 @@
       <template v-if="allowChildren">
         <div
           class="grid-col grid-col--fixed-left"
-          :style="{ width: '100px', minWidth: '100px', left: selectedRowsCb ? '50px' : 0 }"
+          :style="{ width: '110px', minWidth: '110px', left: selectedRowsCb ? '50px' : 0 }"
         >
           <div class="grid-item grid-item--header" :style="{ height: getHeaderHeight + 'px' }"></div>
 
@@ -48,9 +48,8 @@
           >
             <div class="grid-item child-control pt-3 pl-1" :style="{ height: getCellHeight }">
               <v-chip
-                :style="{ top: '-13px', position: 'relative' }"
-                label
-              >{{records[rowId].children.length}}
+                :style="{ top: '-13px', position: 'relative', width: '50px' }" label>
+                {{records[rowId].children.length}}
               </v-chip>
               <v-btn
                 icon
@@ -69,7 +68,7 @@
                 :key="'child-' + childPos"
                 class="grid-item child"
                 :style="{ height: getChildCellHeight }"
-              />
+              ></div>
             </template>
           </div>
         </div>
@@ -107,13 +106,14 @@
               <slot
                 name="cell"
                 :props="{
-                item: records[rowId],
-                colId,
-                rowId,
-                value: records[rowId][header.attr],
-                header,
-                height: getCellHeight,
-                sorting: sorting }"
+                  item: records[rowId],
+                  colId,
+                  rowId,
+                  value: records[rowId][header.attr],
+                  header,
+                  height: getCellHeight,
+                  sorting: sorting
+                }"
               >
                 {{ item[header.attr] }}
               </slot>
