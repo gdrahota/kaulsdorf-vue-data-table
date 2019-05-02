@@ -82,6 +82,7 @@
       >
         <vue-drag-resize
           :isActive="resizeCol === colId"
+          :isResizable="selectedRowsCb"
           :isDraggable="false"
           :w="header.width"
           :minw="header.minWidth"
