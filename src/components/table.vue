@@ -193,7 +193,7 @@
       },
       getLeftPosition (colPosition) {
         let left = 0
-        left += this.selectedRowsCb ? 95 : 0
+        left += this.selectedRowsCb ? 105 : 0
         left += this.allowChildren ? 55 : 0
         for (let i = 0; i <= (colPosition - 1); i++) {
           left += this.headers[i].width
@@ -320,13 +320,13 @@
   .grid-col--fixed-left {
     position: sticky;
     left: 0;
-    z-index: 2;
+    z-index: 3;
   }
 
   .grid-col--fixed-right {
     position: sticky;
     right: 0;
-    z-index: 2;
+    z-index: 3;
   }
 
   .grid-item {
