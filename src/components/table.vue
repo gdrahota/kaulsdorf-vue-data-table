@@ -333,7 +333,7 @@
     background-color: white;
     border-right: 1px solid gray;
     border-bottom: 1px solid gray;
-    overflow-x: hidden;
+    overflow: visible;
   }
 
   .child-control {
@@ -389,7 +389,8 @@
   }
 
   .active {
-    border: 1px solid crimson;
+    background-color: aliceblue;
+    border: 2px solid #1976d2;
   }
 
   .number-of-children {
