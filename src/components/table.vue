@@ -356,24 +356,40 @@
     cursor: ew-resize;
   }
 
+  .grid > .grid-col:first-child > div > .grid-item {
+    border-left: 1px solid transparent;
+  }
+
+  .grid > .grid-col:last-child > div > .grid-item {
+    border-right: 1px solid transparent;
+  }
+
+  .grid > .grid-col > div > .grid-item:first-child {
+    border-top: 1px solid transparent;
+  }
+
+  .grid > .grid-col > div > .grid-item:last-child {
+    border-bottom: 1px solid #ddd;
+  }
+
   .grid > .grid-col:first-child > .marked > .grid-item {
-    border-left: 3px solid dodgerblue;
+    border-left: 1px solid #f73636;
   }
 
   .grid > .grid-col:last-child > .marked > .grid-item {
-    border-right: 3px solid dodgerblue;
+    border-right: 1px solid #f73636;
   }
 
   .grid > .grid-col > .marked > .grid-item:first-child {
-    border-top: 3px solid dodgerblue;
+    border-top: 1px solid #f73636;
   }
 
   .grid > .grid-col > .marked > .grid-item:last-child {
-    border-bottom: 3px solid dodgerblue;
+    border-bottom: 1px solid #f73636;
   }
 
   .active {
-    border: 2px solid crimson;
+    border: 1px solid crimson;
   }
 
   .number-of-children {
