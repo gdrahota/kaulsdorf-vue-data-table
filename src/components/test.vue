@@ -4,7 +4,8 @@
       <div id="table-wrapper">
         <vue-table
           :headers="headers"
-          :items="items"
+          :getRowCb="getRow"
+          :rowCount="items.length"
           :width="1200"
           :height="300"
           :cell-height="110"
@@ -15,6 +16,7 @@
           @columnResized="resizeColumn"
           :selectedRowsCb="selectedRowsCb"
           @toggleSelectCb="item => toggleSelectCb(item)"
+          :toggleShowChildrenCb="toggleShowChildren"
         >
           <div slot="header-cell" slot-scope="{ props }" class="title">{{ props.header.text }}</div>
           <cell slot="cell" slot-scope="{ props }" :props="props"/>
@@ -59,8 +61,17 @@
       resizeColumn ({ col, width }) {
         this.headers[col].width = width
       },
+      getRow (rowIdx) {
+        if (this.items[rowIdx]) {
+          return this.items[rowIdx]
+        }
+        return null
+      },
+      toggleShowChildren (rowIdx) {
+        this.items[rowIdx].showChildren = !this.items[rowIdx].showChildren
+      },
       getData () {
-        return Array.from(Array(10).keys()).map(() => {
+        return Array.from(Array(100).keys()).map(() => {
           return {
             a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7, i: 8, j: 9, k: 10, l: 11, m: 12,
             showChildren: false,
@@ -74,7 +85,7 @@
       selectedRowsCb (data) {
         console.log('data', data)
       },
-      toggleSelectCb(){
+      toggleSelectCb () {
 
       }
     }

@@ -56,7 +56,7 @@
 
     computed: {
       value () {
-        return this.props.item[this.props.header.attr]
+        return this.props.item()[this.props.header.attr]
       }
     },
 
@@ -75,8 +75,8 @@
 
     props: {
       props: {
-        type: [Number, String, Object, Array, Boolean],
-        required: false
+        type: Object,
+        required: true
       },
     }
   }

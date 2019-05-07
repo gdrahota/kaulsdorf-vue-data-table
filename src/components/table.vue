@@ -9,21 +9,21 @@
           <div class="grid-item grid-item--header" :style="{ height: getHeaderHeight + 'px', padding: '10px' }"></div>
 
           <div
-            v-for="(item, rowId) of records"
-            :key="'showSelect-' + rowId"
-            @click="() => markRow(rowId)"
-            :class="{ marked: marked === rowId }"
+            v-for="rowIdx of rowCount"
+            :key="'showSelect-' + rowIdx"
+            @click="() => markRow(rowIdx)"
+            :class="{ marked: marked === rowIdx }"
           >
             <div class="grid-item select-control" :style="{ height: getCellHeight, padding: '10px' }">
               <v-checkbox
                 v-model="selected"
-                :value="rowId"
+                :value="rowIdx"
                 :style="{ top: '-18px', position: 'relative' }"
               ></v-checkbox>
             </div>
-            <template v-if="records[rowId].showChildren">
+            <template v-if="getValueOfRow(rowIdx, 'showChildren')">
               <div
-                v-for="(child, childPos) of records[rowId].children"
+                v-for="(child, childPos) of getChildren(rowIdx)"
                 :key="'child-' + childPos"
                 class="grid-item child"
                 :style="{ height: getChildCellHeight, padding: '10px' }"
@@ -41,30 +41,27 @@
           <div class="grid-item grid-item--header" :style="{ height: getHeaderHeight + 'px' }"></div>
 
           <div
-            v-for="(item, rowId) of records"
-            :key="'showChild-' + rowId"
-            @click="() => markRow(rowId)"
-            :class="{ marked: marked === rowId }"
+            v-for="rowIdx of rowCount"
+            :key="'showChild-' + rowIdx"
+            :class="{ marked: marked === rowIdx }"
+            @click="() => markRow(rowIdx)"
           >
             <div class="grid-item child-control pt-3 pl-1" :style="{ height: getCellHeight }">
-              <v-chip
-                :style="{ top: '-13px', position: 'relative', width: '50px' }" label>
-                {{records[rowId].children.length}}
-              </v-chip>
+              <v-chip :style="{ top: '-13px', position: 'relative', width: '50px' }" label v-text="getChildren(rowIdx).length"></v-chip>
               <v-btn
                 icon
                 outline
                 small
-                @click="() => toggleShowChildren(records[rowId])"
                 :style="{ top: '-13px', position: 'relative' }"
+                @click="() => toggleShowChildrenCb(rowIdx - 1)"
               >
-                <v-icon v-if="records[rowId].showChildren">expand_less</v-icon>
+                <v-icon v-if="getValueOfRow(rowIdx, 'showChildren')">expand_less</v-icon>
                 <v-icon v-else>chevron_right</v-icon>
               </v-btn>
             </div>
-            <template v-if="records[rowId].showChildren">
+            <template v-if="getValueOfRow(rowIdx, 'showChildren')">
               <div
-                v-for="(child, childPos) of records[rowId].children"
+                v-for="(child, childPos) of getChildren(rowIdx)"
                 :key="'child-' + childPos"
                 class="grid-item child"
                 :style="{ height: getChildCellHeight }"
@@ -100,48 +97,48 @@
         </vue-drag-resize>
 
         <template
-          v-for="(item, rowId) of records"
+          v-for="rowIdx of rowCount"
         >
-          <div @click="setActive(null)" :key="'wert' + rowId" :class="{ marked: marked === rowId }">
+          <div @click="setActive(null)" :key="'wert' + rowIdx" :class="{ marked: marked === rowIdx }">
             <div :style="{ height: getCellHeight }" class="grid-item">
               <slot
                 name="cell"
                 :props="{
-                  item: records[rowId],
+                  item: () => getRowCb(rowIdx - 1),
                   colId,
-                  rowId,
-                  value: records[rowId][header.attr],
+                  rowId: rowIdx,
+                  value: () => getValueOfRow(rowIdx, header.attr),
                   header,
                   height: getCellHeight,
                   sorting: sorting
                 }"
               >
-                {{ item[header.attr] }}
+                {{ getValueOfRow(rowIdx, header.attr) }}
               </slot>
             </div>
 
             <template
-              v-if="allowChildren && records[rowId].showChildren && records[rowId].children"
+              v-if="allowChildren && getValueOfRow(rowIdx, 'showChildren') && getChildren(rowIdx)"
             >
               <div
-                v-for="(child, idx) of records[rowId].children"
-                :key="'child_' + idx"
+                v-for="(child, idx) of getChildren(rowIdx)"
+                :key="'child_' + rowIdx + idx"
                 :style="{ height: getChildCellHeight }"
                 class="grid-item child"
               >
-                <slot
-                  name="child"
-                  :props="{
-                    item: item,
-                    colId,
-                    rowId,
-                    value: child[header.attr],
-                    header,
-                    child
-                  }"
-                >
-                  <div>{{ child[header.attr] }}</div>
-                </slot>
+                <!--<slot-->
+                  <!--name="child"-->
+                  <!--:props="{-->
+                    <!--item: child,-->
+                    <!--colId,-->
+                    <!--rowId: rowIdx,-->
+                    <!--value: child[header.attr],-->
+                    <!--header,-->
+                    <!--child-->
+                  <!--}"-->
+                <!--&gt;-->
+                  <!--<div>{{ child[header.attr] }}</div>-->
+                <!--</slot>-->
               </div>
             </template>
           </div>
@@ -169,9 +166,10 @@
       getHeaderHeight () {
         return typeof this.headerHeight === "number" ? this.headerHeight : parseInt(this.headerHeight)
       },
-      hasChildren () {
-        return this.records.some(item => item.children)
-      },
+    },
+
+    beforeUpdate () {
+      console.log('beforeUpdate', new Date())
     },
 
     data () {
@@ -184,6 +182,22 @@
     },
 
     methods: {
+      getValueOfRow (rowIdx, attrName) {
+        const row = this.getRowCb(rowIdx - 1)
+        if (row && row[attrName]) {
+          return row[attrName]
+        }
+
+        return null
+      },
+      getChildren (rowIdx) {
+        const row = this.getRowCb(rowIdx - 1)
+        if (row && row.children && row.children.length > 0) {
+          return row.children
+        }
+
+        return null
+      },
       setActive (colPos) {
         if (this.resizeCol === colPos) {
           this.resizeCol = null
@@ -207,12 +221,8 @@
         }
         this.$emit('columnResized', payload)
       },
-      toggleShowChildren (item) {
-        this.$emit('toggleSelectCb', { ...item, showChildren: !item.showChildren })
-        item.showChildren = !item.showChildren
-      },
-      markRow (rowId) {
-        this.marked = rowId
+      markRow (rowIdx) {
+        //this.setSelectedCb(rowIdx)
       },
       handleKeyPress (e) {
         if (this.selectedRowsCb && (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'c') {
@@ -234,9 +244,17 @@
         type: Array,
         required: true
       },
-      items: {
-        type: Array,
-        required: true
+      rowCount: {
+        type: Number,
+        required: true,
+      },
+      getRowCb: {
+        type: Function,
+        required: true,
+      },
+      toggleShowChildrenCb: {
+        type: Function,
+        required: true,
       },
       fitToSpace: {
         type: Boolean,
@@ -288,12 +306,6 @@
         }
       },
     },
-
-    watch: {
-      items (items) {
-        this.records = items
-      }
-    }
   }
 </script>
 
