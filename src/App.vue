@@ -14,7 +14,7 @@
 </template>
 
 <script>
-  import Test from './components/test'
+  import Test from './components/test/test'
 
   export default {
     name: 'App',

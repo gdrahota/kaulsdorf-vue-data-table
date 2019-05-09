@@ -1,155 +1,91 @@
 <template>
   <div class="grid-container" :style="{ width: getControlWidth, height: getControlHeight }" :class="classList">
     <div class="grid">
-      <template v-if="selectedRowsCb">
+      <div class="grid-row grid-item--header" :style="{ height: headerHeight }">
         <div
-          class="grid-col grid-col--fixed-left"
-          :style="{ width: '50px', minWidth: '50px', left: 0 }"
-        >
-          <div class="grid-item grid-item--header" :style="{ height: getHeaderHeight + 'px', padding: '10px' }"></div>
+          v-if="rowsAreSelectable"
+          class="grid-item grid-col--fixed-left"
+          :style="{ width: '55px', left: 0 }"
+        ></div>
 
-          <div
-            v-for="rowIdx of rowCount"
-            :key="'showSelect-' + rowIdx"
-            @click="() => markRow(rowIdx)"
-            :class="{ marked: marked === rowIdx }"
-          >
-            <div class="grid-item select-control" :style="{ height: getCellHeight, padding: '10px' }">
-              <v-checkbox
-                v-model="selected"
-                :value="rowIdx"
-                :style="{ top: '-18px', position: 'relative' }"
-              ></v-checkbox>
-            </div>
-            <template v-if="getValueOfRow(rowIdx, 'showChildren')">
-              <div
-                v-for="(child, childPos) of getChildren(rowIdx)"
-                :key="'child-' + childPos"
-                class="grid-item child"
-                :style="{ height: getChildCellHeight, padding: '10px' }"
-              ></div>
-            </template>
-          </div>
-        </div>
-      </template>
-
-      <template v-if="allowChildren">
         <div
-          class="grid-col grid-col--fixed-left"
-          :style="{ width: '110px', minWidth: '110px', left: selectedRowsCb ? '50px' : 0 }"
-        >
-          <div class="grid-item grid-item--header" :style="{ height: getHeaderHeight + 'px' }"></div>
+          v-if="allowShowChildren"
+          class="grid-item grid-col--fixed-left"
+          :style="{ width: '110px', left: '55px' }"
+        ></div>
 
+        <slot
+          name="header"
+          v-for="(header, headerIdx) of headers"
+          :headers="headers"
+          :headerIdx="headerIdx"
+          :rowsAreSelectable="rowsAreSelectable"
+          :allowShowChildren="allowShowChildren"
+          :fixedLeftCols="fixedLeftCols"
+        >
           <div
-            v-for="rowIdx of rowCount"
-            :key="'showChild-' + rowIdx"
-            :class="{ marked: marked === rowIdx }"
-            @click="() => markRow(rowIdx)"
+            :key="'header-col-' + headerIdx"
+            class="grid-item"
+            :class="{ 'grid-col--fixed-left': fixedLeftCols > headerIdx }"
+            :style="{ width: header.width + 'px', left: getLeftPosition(headerIdx) }"
           >
-            <div class="grid-item child-control pt-3 pl-1" :style="{ height: getCellHeight }">
-              <v-chip :style="{ top: '-13px', position: 'relative', width: '50px' }" label v-text="getChildren(rowIdx).length"></v-chip>
-              <v-btn
-                icon
-                outline
-                small
-                :style="{ top: '-13px', position: 'relative' }"
-                @click="() => toggleShowChildrenCb(rowIdx - 1)"
-              >
-                <v-icon v-if="getValueOfRow(rowIdx, 'showChildren')">expand_less</v-icon>
-                <v-icon v-else>chevron_right</v-icon>
-              </v-btn>
-            </div>
-            <template v-if="getValueOfRow(rowIdx, 'showChildren')">
-              <div
-                v-for="(child, childPos) of getChildren(rowIdx)"
-                :key="'child-' + childPos"
-                class="grid-item child"
-                :style="{ height: getChildCellHeight }"
-              ></div>
-            </template>
+            {{ header.text }}
           </div>
-        </div>
-      </template>
-
-      <div
-        v-for="(header, colId) of headers"
-        :key="colId"
-        :class="{ 'grid-col': true, 'grid-col--fixed-left': colId < fixedLeftCols }"
-        :style="{ width: header.width + 'px', minWidth: header.width + 'px', left: getLeftPosition(colId) }"
-      >
-        <vue-drag-resize
-          :isActive="resizeCol === colId"
-          :isResizable="!!selectedRowsCb"
-          :isDraggable="false"
-          :w="header.width"
-          :minw="header.minWidth"
-          :h="getHeaderHeight"
-          :parentLimitation="false"
-          :sticks="['mr']"
-          @resizing="square => resize(header.attr, square)"
-          @clicked.stop="() => setActive(colId)"
-          @resizestop="() => setActive(null)"
-          class="grid-item grid-item--header"
-        >
-          <slot name="header-cell" :props="{ header, sorting }">
-            <span>{{ header.text }}</span>
-          </slot>
-        </vue-drag-resize>
-
-        <template
-          v-for="rowIdx of rowCount"
-        >
-          <div @click="setActive(null)" :key="'wert' + rowIdx" :class="{ marked: marked === rowIdx }">
-            <div :style="{ height: getCellHeight }" class="grid-item">
-              <slot
-                name="cell"
-                :props="{
-                  item: () => getRowCb(rowIdx - 1),
-                  colId,
-                  rowId: rowIdx,
-                  value: () => getValueOfRow(rowIdx, header.attr),
-                  header,
-                  height: getCellHeight,
-                  sorting: sorting
-                }"
-              >
-                {{ getValueOfRow(rowIdx, header.attr) }}
-              </slot>
-            </div>
-
-            <template
-              v-if="allowChildren && getValueOfRow(rowIdx, 'showChildren') && getChildren(rowIdx)"
-            >
-              <div
-                v-for="(child, idx) of getChildren(rowIdx)"
-                :key="'child_' + rowIdx + idx"
-                :style="{ height: getChildCellHeight }"
-                class="grid-item child"
-              >
-                <!--<slot-->
-                  <!--name="child"-->
-                  <!--:props="{-->
-                    <!--item: child,-->
-                    <!--colId,-->
-                    <!--rowId: rowIdx,-->
-                    <!--value: child[header.attr],-->
-                    <!--header,-->
-                    <!--child-->
-                  <!--}"-->
-                <!--&gt;-->
-                  <!--<div>{{ child[header.attr] }}</div>-->
-                <!--</slot>-->
-              </div>
-            </template>
-          </div>
-        </template>
+        </slot>
       </div>
+
+      <template v-for="(item, rowIdx) of items">
+        <!-- main row -->
+        <row
+          :key="'doc-' + rowIdx"
+          :headers="headers"
+          :docId="item.id"
+          :rowIdx="rowIdx"
+          :numOfChildren="item.children"
+          :fixedLeftCols="fixedLeftCols"
+          :rowsAreSelectable="rowsAreSelectable"
+          :allowShowChildren="allowShowChildren"
+          :cellHeight="getCellHeight"
+          :getSelectedRowIdsGetter="getSelectedRowIdsGetter"
+          :getDocValueByAttrNameGetter="getDocValueByAttrNameGetter"
+          :markRowIdFnc="markRowIdFnc"
+          :toggleSelectedRowsFnc="toggleSelectedRowsFnc"
+          :toggleShowChildrenFnc="toggleShowChildrenFnc"
+          :cell="cell"
+        />
+
+        <!-- main row children -->
+        <child-row
+          v-for="childIdx of item.children"
+          :key="'child-doc-' + rowIdx + '-' + childIdx"
+          :headers="headers"
+          :rowIdx="rowIdx"
+          :docId="item.id"
+          :childIdx="childIdx - 1"
+          :rowsAreSelectable="rowsAreSelectable"
+          :allowShowChildren="allowShowChildren"
+          :fixedLeftCols="fixedLeftCols"
+          :childCellHeight="getChildCellHeight"
+          :getSelectedRowIdsGetter="getSelectedRowIdsGetter"
+          :getDocValueByAttrNameGetter="getDocValueByAttrNameGetter"
+          :child="child"
+        ></child-row>
+
+      </template>
     </div>
   </div>
 </template>
 
 <script>
+  import Row from './row'
+  import ChildRow from './child-row'
+
   export default {
+    components: {
+      Row,
+      ChildRow,
+    },
+
     computed: {
       getControlHeight () {
         return this.fitToSpace ? '100%' : this.height + 'px'
@@ -169,48 +105,22 @@
     },
 
     beforeUpdate () {
-      console.log('beforeUpdate', new Date())
+      console.log('beforeUpdate table', new Date())
     },
 
-    data () {
-      return {
-        records: this.items,
-        resizeCol: null,
-        marked: null,
-        selected: [],
-      }
+    created () {
+      console.log('created table', new Date())
     },
 
     methods: {
-      getValueOfRow (rowIdx, attrName) {
-        const row = this.getRowCb(rowIdx - 1)
-        if (row && row[attrName]) {
-          return row[attrName]
-        }
-
-        return null
-      },
-      getChildren (rowIdx) {
-        const row = this.getRowCb(rowIdx - 1)
-        if (row && row.children && row.children.length > 0) {
-          return row.children
-        }
-
-        return null
-      },
-      setActive (colPos) {
-        if (this.resizeCol === colPos) {
-          this.resizeCol = null
-        } else {
-          this.resizeCol = colPos
-        }
-      },
       getLeftPosition (colPosition) {
         let left = 0
-        left += this.selectedRowsCb ? 105 : 0
-        left += this.allowChildren ? 55 : 0
+        left += this.rowsAreSelectable ? 55 : 0
+        left += this.allowShowChildren ? 110 : 0
         for (let i = 0; i <= (colPosition - 1); i++) {
-          left += this.headers[i].width
+          if (this.fixedLeftCols > i) {
+            left += this.headers[i].width
+          }
         }
         return left + 'px'
       },
@@ -221,14 +131,11 @@
         }
         this.$emit('columnResized', payload)
       },
-      markRow (rowIdx) {
-        //this.setSelectedCb(rowIdx)
-      },
       handleKeyPress (e) {
-        if (this.selectedRowsCb && (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'c') {
-          this.selectedRowsCb(this.selected.map(idx => this.items[idx]))
+        if (this.rowsAreSelectable && (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'c') {
+          this.rowsAreSelectable(this.selected.map(idx => this.items[idx]))
         }
-      }
+      },
     },
 
     mounted () {
@@ -242,90 +149,140 @@
     props: {
       headers: {
         type: Array,
-        required: true
+        required:
+          true
+      },
+      items: {
+        type: Array,
+        default:
+          () => []
       },
       rowCount: {
         type: Number,
-        required: true,
-      },
-      getRowCb: {
-        type: Function,
-        required: true,
-      },
-      toggleShowChildrenCb: {
-        type: Function,
-        required: true,
+        required:
+          true,
       },
       fitToSpace: {
         type: Boolean,
-        default: false
+        default:
+          false
       },
       height: {
         type: Number,
-        default: 500
+        default:
+          500
       },
       width: {
         type: Number,
-        default: 1000
+        default:
+          1000
       },
       fixedLeftCols: {
         type: Number,
-        default: 0
+        default:
+          0
       },
       classList: {
         type: String,
-        required: false
+        required:
+          false
       },
       cellHeight: {
         type: [Number, String],
-        default: 20
+        default:
+          20
       },
       childCellHeight: {
         type: [Number, String],
-        default: 20
+        default:
+          20
       },
       headerHeight: {
         type: [Number, String],
-        default: 40
+        default:
+          40
       },
-      allowChildren: {
+      allowShowChildren: {
         type: Boolean,
-        default: false
+        default:
+          false
       },
-      selectedRowsCb: {
+      rowsAreSelectable: {
+        type: Boolean,
+        default:
+          true,
+      },
+      getSelectedRowIdsGetter: {
+        type: Array,
+        required: true,
+      },
+      getDocValueByAttrNameGetter: {
         type: Function,
-        default: null
+        required: true,
       },
-      sorting: {
+      markRowIdFnc: {
+        type: Function,
+        default: () => {
+          console.log('markRowIdFnc NOT provided to table')
+        },
+      },
+      toggleSelectedRowsFnc: {
+        type: Function,
+        default: () => {
+          console.log('toggleSelectedRowsFnc NOT provided to table')
+        },
+      },
+      toggleShowChildrenFnc: {
+        type: Function,
+        default: () => {
+          console.log('toggleShowChildrenFnc NOT provided to table')
+        },
+      },
+      cell: {
         type: Object,
         default: () => {
-          return {
-            descending: null,
-            sortBy: null
-          }
+          console.log('cell NOT provided to table')
+        }
+      },
+      child: {
+        type: Object,
+        default: () => {
+          console.log('child NOT provided to table')
         }
       },
     },
   }
 </script>
 
-<style scoped>
+<style>
+  #table-wrapper {
+    border: 1px solid #ddd;
+    position: relative;
+    left: 0px;
+    height: calc(100vh - 130px);
+    width: calc(100% - 0px);
+    background-color: transparent;
+  }
+
   .grid-container {
     display: grid; /* This is a (hacky) way to make the .grid element size to fit its content */
     overflow: auto;
   }
 
-  .grid {
+  .grid > .grid-row {
     display: flex;
     flex-wrap: nowrap;
   }
 
+  .grid > .grid-row > * {
+    float: left;
+  }
+
   .grid-item--header {
-    background-color: white;
     resize: horizontal;
-    position: sticky;
-    position: -webkit-sticky;
-    top: 0;
+
+    position: sticky !important;
+    top: 0 !important;
     z-index: 2 !important;
   }
 
@@ -335,30 +292,37 @@
     z-index: 3;
   }
 
-  .grid-col--fixed-right {
-    position: sticky;
-    right: 0;
-    z-index: 3;
-  }
-
   .grid-item {
     background-color: white;
     border-right: 1px solid gray;
     border-bottom: 1px solid gray;
     overflow: visible;
+    z-index: 1;
+
+    resize: horizontal;
+    position: sticky;
+    top: 0;
+
+  }
+
+  /* in component toggle-show.children.vue */
+  .toggle-show-children > .children-counter {
+    float: left;
+    background-color: #eee;
+    margin: 10px 5px 10px 10px;
+    padding: 5px;
+    position: inherit;
+    text-align: right;
+    width: 45px;
+  }
+
+  .toggle-show-children > button {
+    top: 5px;
   }
 
   .child-control {
     overflow: hidden;
     padding: unset;
-  }
-
-  .grid-col > .grid-item:last-child {
-    border-bottom: none;
-  }
-
-  .grid-col:last-child > .grid-item {
-    border-right: none;
   }
 
   .drag-handle {
@@ -368,37 +332,37 @@
     cursor: ew-resize;
   }
 
-  .grid > .grid-col:first-child > div > .grid-item {
-    border-left: 1px solid transparent;
-  }
+  /*.grid > .grid-col:first-child > div > .grid-item {*/
+  /*border-left: 1px solid transparent;*/
+  /*}*/
 
-  .grid > .grid-col:last-child > div > .grid-item {
-    border-right: 1px solid transparent;
-  }
+  /*.grid > .grid-col:last-child > div > .grid-item {*/
+  /*border-right: 1px solid transparent;*/
+  /*}*/
 
-  .grid > .grid-col > div > .grid-item:first-child {
-    border-top: 1px solid transparent;
-  }
+  /*.grid > .grid-col > div > .grid-item:first-child {*/
+  /*border-top: 1px solid transparent;*/
+  /*}*/
 
-  .grid > .grid-col > div > .grid-item:last-child {
-    border-bottom: 1px solid #ddd;
-  }
+  /*.grid > .grid-col > div > .grid-item:last-child {*/
+  /*border-bottom: 1px solid #ddd;*/
+  /*}*/
 
-  .grid > .grid-col:first-child > .marked > .grid-item {
-    border-left: 1px solid #f73636;
-  }
+  /*.grid > .grid-col:first-child > .marked > .grid-item {*/
+  /*border-left: 1px solid #f73636;*/
+  /*}*/
 
-  .grid > .grid-col:last-child > .marked > .grid-item {
-    border-right: 1px solid #f73636;
-  }
+  /*.grid > .grid-col:last-child > .marked > .grid-item {*/
+  /*border-right: 1px solid #f73636;*/
+  /*}*/
 
-  .grid > .grid-col > .marked > .grid-item:first-child {
-    border-top: 1px solid #f73636;
-  }
+  /*.grid > .grid-col > .marked > .grid-item:first-child {*/
+  /*border-top: 1px solid #f73636;*/
+  /*}*/
 
-  .grid > .grid-col > .marked > .grid-item:last-child {
-    border-bottom: 1px solid #f73636;
-  }
+  /*.grid > .grid-col > .marked > .grid-item:last-child {*/
+  /*border-bottom: 1px solid #f73636;*/
+  /*}*/
 
   .active {
     background-color: aliceblue;
@@ -412,7 +376,13 @@
     float: left;
   }
 
-  .select-control {
-    overflow: hidden;
+  .select-control > * {
+    text-align: center;
+  }
+
+  .child-row > * {
+    background-color: rgba(238, 238, 238, 0.5);
+    padding: 15px 10px;
+    text-align: right;
   }
 </style>
