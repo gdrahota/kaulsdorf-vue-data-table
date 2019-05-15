@@ -10,25 +10,28 @@
     <select-row
       :docId="docId"
       :cellHeight="cellHeight"
-      :getSelectedRowIdsGetter="getSelectedRowIdsGetter"
-      :toggleSelectedRowsFnc="toggleSelectedRowsFnc"
+      :toggleSelectRow="toggleSelectRow"
     />
 
     <!-- show children -->
-    <toggle-show-children
-      v-if="allowShowChildren"
-      :rowIdx="rowIdx"
-      :docId="docId"
-      :numOfChildren="numOfChildren"
-      :style="{ width: '110px', left: '55px' }"
-      :cellHeight="cellHeight"
-      :getDocValueByAttrNameGetter="getDocValueByAttrNameGetter"
-      :toggleShowChildrenFnc="toggleShowChildrenFnc"
-    />
+    <div class="grid-item grid-col--fixed-left toggle-show-children" :style="{ height: cellHeight }">
+      <component
+        :is="toggleShowChildren"
+        v-if="allowShowChildren"
+        :rowIdx="rowIdx"
+        :docId="docId"
+        :numOfChildren="numOfChildren"
+        :style="{ width: '110px', left: '55px' }"
+        :cellHeight="cellHeight"
+        :getDocValueByAttrNameGetter="getDocValueByAttrNameGetter"
+        :toggleShowChildrenFnc="toggleShowChildrenFnc"
+      />
+    </div>
 
     <!-- data cells -->
     <template v-for="(header, headerIdx) of headers">
       <div
+        :key="'cell-' + rowIdx + '-' + headerIdx"
         class="grid-item cell-value"
         :class="{ 'grid-col--fixed-left': fixedLeftCols > headerIdx, active: getMarkedRowIdGetter === rowIdx }"
         :style="{ width: header.width + 'px', left: getLeftPosition(headerIdx), height: cellHeight }"
@@ -39,6 +42,7 @@
           :header="header"
           :headerIdx="headerIdx"
           :rowIdx="rowIdx"
+          :docId="docId"
         />
       </div>
     </template>
@@ -46,17 +50,11 @@
 </template>
 
 <script>
-  import ToggleShowChildren from './toggle-show-children'
   import SelectRow from './select-row'
 
   export default {
-    beforeUpdate () {
-      //console.log('beforeUpdate row')
-    },
-
     components: {
       SelectRow,
-      ToggleShowChildren,
     },
 
     methods: {
@@ -106,16 +104,6 @@
         type: String,
         required: true,
       },
-      getSelectedRowIdsGetter: {
-        type: Array,
-        default: () => []
-      },
-      toggleSelectedRowsFnc: {
-        type: Function,
-        default: () => {
-          console.log('toggleSelectedRowsFnc NOT provided to row')
-        }
-      },
       getMarkedRowIdGetter: {
         type: Number,
       },
@@ -138,7 +126,19 @@
       cell: {
         type: Object,
         default: () => {
-          console.log('cell NOT provided to table')
+          console.log('cell NOT provided to row')
+        }
+      },
+      toggleSelectRow: {
+        type: Object,
+        default: () => {
+          console.log('toggleSelectRow NOT provided to row')
+        }
+      },
+      toggleShowChildren: {
+        type: Object,
+        default: () => {
+          console.log('toggleShowChildren NOT provided to row')
         }
       },
     },

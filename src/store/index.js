@@ -4,7 +4,7 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 const headers = [
-  { text: 'Head 0', attr: 'a', width: 200, minWidth: 100, },
+  { text: 'Head 0', attr: 'a', width: 100, minWidth: 100, },
   { text: 'Head 1', attr: 'b', width: 120, minWidth: 100, },
   { text: 'Head 2', attr: 'c', width: 140, minWidth: 100, },
   { text: 'Head 3', attr: 'd', width: 160, minWidth: 100, },
@@ -19,12 +19,28 @@ const headers = [
   { text: 'Head 12', attr: 'm', width: 340, minWidth: 100, },
 ]
 
+const numberOfTestRecords = 20
+
+const random = () => Math.round(Math.random() * 100)
+
 const items = Array
-  .from(Array(200).keys())
+  .from(Array(numberOfTestRecords).keys())
   .map(i => {
     return {
       _id: 'idx-' + i,
-      a: 0, b: 1, c: 2 * i, d: 3 * i, e: 4 * i, f: 5 * i, g: 6 * i, h: 7 * i, i: 8, j: 9, k: 10, l: 11, m: 12,
+      a: random(),
+      b: random(),
+      c: false,
+      d: false,
+      e: random(),
+      f: random(),
+      g: random(),
+      h: random(),
+      i: random(),
+      j: random(),
+      k: random(),
+      l: random(),
+      m: random(),
       showChildren: false,
       children: [
         { a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7, i: 8, j: 9, k: 10, l: 11, m: 12, },
@@ -53,6 +69,14 @@ const toggleShowChildrenMutation = (state, id) => {
   })
 }
 
+const setHeaderWidthMutation = (state, { headerIdx, width }) => {
+  if (state.headers[headerIdx].minWidth < width) {
+    state.headers[headerIdx].width = width
+  } else {
+    state.headers[headerIdx].width = state.headers[headerIdx].minWidth
+  }
+}
+
 const toggleSelectedRowsMutation = (state, docId) => {
   const idx = state.selectedRowIds.indexOf(docId)
   if (idx === -1) {
@@ -60,6 +84,11 @@ const toggleSelectedRowsMutation = (state, docId) => {
   } else {
     state.selectedRowIds.splice(idx, 1)
   }
+}
+
+const getRowValue = state => (docId, attrName) => {
+  const row = state.items.find(item => item._id === docId)
+  return row && [null, undefined].indexOf(row[attrName]) === -1 ? row[attrName] : null
 }
 
 export default new Vuex.Store({
@@ -74,14 +103,15 @@ export default new Vuex.Store({
     setRowValueMutation,
     toggleSelectedRowsMutation,
     toggleShowChildrenMutation,
+    setHeaderWidthMutation,
   },
   getters: {
     getAll: state => state.items,
     get: state => docId => state.items.find(item => item._id === docId),
     getChildValue: state => (docId, childIdx, attrName) => state.items.find(item => item._id === docId).children[childIdx][attrName],
-    getRowValue: state => (rowId, attrName) => state.items[rowId][attrName],
+    getRowValue,
     getRowCount: state => state.items.length,
-    headers: state => state.headers,
+    getHeaders: state => state.headers,
     getSelectedRowIds: state => state.selectedRowIds,
     getMarkedRowId: state => state.markedRowId,
   }

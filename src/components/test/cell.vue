@@ -2,28 +2,57 @@
   <div>
     <v-text-field
       v-if="headerIdx === 0"
-      :v-model="data"
+      :value="data"
       label="label"
       hide-details
       dense
+      @change="save"
+      @click:clear="() => save()"
+      clearable
     ></v-text-field>
 
-    <v-btn v-else-if="headerIdx === 1" fab small color="primary">
+    <v-btn
+      v-else-if="headerIdx === 1"
+      fab
+      small
+      color="primary"
+      @click="changeValue"
+    >
       <v-icon>check</v-icon>
     </v-btn>
 
-    <v-switch v-else-if="headerIdx === 2" color="primary" v-model="data"/>
+    <v-switch
+      v-else-if="headerIdx === 2"
+      :value="data"
+      @change="save"
+      color="primary"
+      hide-details
+      :true-value="true"
+      :false-value="false"
+    ></v-switch>
 
-    <v-checkbox v-else-if="headerIdx === 3" v-model="data"/>
+    <v-checkbox
+      v-else-if="headerIdx === 3"
+      :value="data"
+      @change="save"
+      hide-details
+      :true-value="true"
+      :false-value="false"
+    ></v-checkbox>
 
-    <div v-else>
-      {{ rowValue(rowIdx, headers[headerIdx].attr) }}
-    </div>
+    <v-slider
+      v-else-if="headerIdx === 4"
+      :value="data"
+      inverse-label
+      @change="save"
+    ></v-slider>
+
+    <div>{{ data }}</div>
   </div>
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+  import { mapGetters, mapMutations } from 'vuex'
 
   export default {
     computed: {
@@ -31,15 +60,27 @@
         rowValue: 'getRowValue',
         getMarkedRowId: 'getMarkedRowId',
       }),
-    },
-
-    data () {
-      return {
-        data: null
+      data: {
+        get () {
+          return this.rowValue(this.docId, this.header.attr)
+        },
+        set (value) {
+          console.log('set', value)
+          this.setRowValue({ id: this.docId, attrName: this.header.attr, value })
+        }
       }
     },
 
     methods: {
+      ...mapMutations({
+        setRowValue: 'setRowValueMutation',
+      }),
+      changeValue () {
+        this.save(Math.round(Math.random() * 100 - 50) + this.data)
+      },
+      save (value) {
+        this.setRowValue({ id: this.docId, attrName: this.header.attr, value })
+      },
       getLeftPosition (colPosition) {
         let left = 0
         left += this.rowsAreSelectable ? 55 : 0
@@ -68,6 +109,10 @@
       },
       rowIdx: {
         type: Number,
+        required: true,
+      },
+      docId: {
+        type: [Number, String],
         required: true,
       },
     },

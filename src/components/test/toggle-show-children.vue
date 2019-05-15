@@ -1,5 +1,5 @@
 <template>
-  <div class="grid-item grid-col--fixed-left toggle-show-children" :style="{ height: cellHeight }">
+  <div>
     <span class="children-counter" v-text="numOfChildren"></span>
     <v-btn
       icon

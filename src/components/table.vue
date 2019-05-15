@@ -1,38 +1,16 @@
 <template>
   <div class="grid-container" :style="{ width: getControlWidth, height: getControlHeight }" :class="classList">
     <div class="grid">
-      <div class="grid-row grid-item--header" :style="{ height: headerHeight }">
-        <div
-          v-if="rowsAreSelectable"
-          class="grid-item grid-col--fixed-left"
-          :style="{ width: '55px', left: 0 }"
-        ></div>
 
-        <div
-          v-if="allowShowChildren"
-          class="grid-item grid-col--fixed-left"
-          :style="{ width: '110px', left: '55px' }"
-        ></div>
-
-        <slot
-          name="header"
-          v-for="(header, headerIdx) of headers"
-          :headers="headers"
-          :headerIdx="headerIdx"
-          :rowsAreSelectable="rowsAreSelectable"
-          :allowShowChildren="allowShowChildren"
-          :fixedLeftCols="fixedLeftCols"
-        >
-          <div
-            :key="'header-col-' + headerIdx"
-            class="grid-item"
-            :class="{ 'grid-col--fixed-left': fixedLeftCols > headerIdx }"
-            :style="{ width: header.width + 'px', left: getLeftPosition(headerIdx) }"
-          >
-            {{ header.text }}
-          </div>
-        </slot>
-      </div>
+      <header-row
+        :headers="headers"
+        :rowsAreSelectable="rowsAreSelectable"
+        :allowShowChildren="allowShowChildren"
+        :fixedLeftCols="fixedLeftCols"
+        :setHeaderWidthFnc="setHeaderWidthFnc"
+        :headerHeight="getHeaderHeight"
+        :headerCell="headerCell"
+      />
 
       <template v-for="(item, rowIdx) of items">
         <!-- main row -->
@@ -46,12 +24,12 @@
           :rowsAreSelectable="rowsAreSelectable"
           :allowShowChildren="allowShowChildren"
           :cellHeight="getCellHeight"
-          :getSelectedRowIdsGetter="getSelectedRowIdsGetter"
           :getDocValueByAttrNameGetter="getDocValueByAttrNameGetter"
           :markRowIdFnc="markRowIdFnc"
-          :toggleSelectedRowsFnc="toggleSelectedRowsFnc"
           :toggleShowChildrenFnc="toggleShowChildrenFnc"
           :cell="cell"
+          :toggleSelectRow="toggleSelectRow"
+          :toggleShowChildren="toggleShowChildren"
         />
 
         <!-- main row children -->
@@ -66,10 +44,9 @@
           :allowShowChildren="allowShowChildren"
           :fixedLeftCols="fixedLeftCols"
           :childCellHeight="getChildCellHeight"
-          :getSelectedRowIdsGetter="getSelectedRowIdsGetter"
           :getDocValueByAttrNameGetter="getDocValueByAttrNameGetter"
           :child="child"
-        ></child-row>
+        />
 
       </template>
     </div>
@@ -77,11 +54,21 @@
 </template>
 
 <script>
+  import HeaderRow from './header-row'
   import Row from './row'
   import ChildRow from './child-row'
 
   export default {
+    beforeUpdate () {
+      console.log('kaulsdorf-vue-data-table => Vue instance beforeUpdate')
+    },
+
+    created () {
+      console.log('kaulsdorf-vue-data-table => Vue instance created')
+    },
+
     components: {
+      HeaderRow,
       Row,
       ChildRow,
     },
@@ -104,14 +91,6 @@
       },
     },
 
-    beforeUpdate () {
-      console.log('beforeUpdate table', new Date())
-    },
-
-    created () {
-      console.log('created table', new Date())
-    },
-
     methods: {
       getLeftPosition (colPosition) {
         let left = 0
@@ -123,13 +102,6 @@
           }
         }
         return left + 'px'
-      },
-      resize (col, newRect) {
-        const payload = {
-          col,
-          width: newRect.width
-        }
-        this.$emit('columnResized', payload)
       },
       handleKeyPress (e) {
         if (this.rowsAreSelectable && (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'c') {
@@ -212,10 +184,6 @@
         default:
           true,
       },
-      getSelectedRowIdsGetter: {
-        type: Array,
-        required: true,
-      },
       getDocValueByAttrNameGetter: {
         type: Function,
         required: true,
@@ -226,16 +194,16 @@
           console.log('markRowIdFnc NOT provided to table')
         },
       },
-      toggleSelectedRowsFnc: {
-        type: Function,
-        default: () => {
-          console.log('toggleSelectedRowsFnc NOT provided to table')
-        },
-      },
       toggleShowChildrenFnc: {
         type: Function,
         default: () => {
           console.log('toggleShowChildrenFnc NOT provided to table')
+        },
+      },
+      setHeaderWidthFnc: {
+        type: Function,
+        default: () => {
+          console.log('setHeaderWidthFnc NOT provided to table')
         },
       },
       cell: {
@@ -250,6 +218,24 @@
           console.log('child NOT provided to table')
         }
       },
+      headerCell: {
+        type: Object,
+        default: () => {
+          console.log('headerCell NOT provided to table')
+        }
+      },
+      toggleShowChildren: {
+        type: Object,
+        default: () => {
+          console.log('toggleShowChildren NOT provided to table')
+        }
+      },
+      toggleSelectRow: {
+        type: Object,
+        default: () => {
+          console.log('toggleSelectRow NOT provided to table')
+        }
+      },
     },
   }
 </script>
@@ -259,7 +245,7 @@
     border: 1px solid #ddd;
     position: relative;
     left: 0px;
-    height: calc(100vh - 130px);
+    height: calc(100vh - 150px);
     width: calc(100% - 0px);
     background-color: transparent;
   }

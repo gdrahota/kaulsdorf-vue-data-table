@@ -94,10 +94,6 @@
         type: Boolean,
         required: true,
       },
-      getSelectedRowIdsGetter: {
-        type: Array,
-        required: true,
-      },
       getDocValueByAttrNameGetter: {
         type: Function,
         required: true,

@@ -1,10 +1,10 @@
 <template>
   <div>
-    <v-checkbox v-if="headerIdx === 0" v-model="data"/>
+    <v-checkbox v-if="headerIdx === 4" v-model="data"/>
 
-    <v-switch v-else-if="headerIdx === 1" color="primary" v-model="data"/>
+    <v-switch v-else-if="headerIdx === 5" color="primary" v-model="data"/>
 
-    <v-btn v-else-if="headerIdx === 2" fab small color="primary">
+    <v-btn v-else-if="headerIdx === 6" fab small color="primary">
       <v-icon>check</v-icon>
     </v-btn>
 
