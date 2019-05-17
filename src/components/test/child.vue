@@ -1,24 +1,24 @@
 <template>
   <div>
-    <v-checkbox v-if="headerIdx === 4" v-model="data"/>
+    <!--<v-checkbox v-if="headerIdx === 4" v-model="data"/>-->
 
-    <v-switch v-else-if="headerIdx === 5" color="primary" v-model="data"/>
+    <!--<v-switch v-else-if="headerIdx === 5" color="primary" v-model="data"/>-->
 
-    <v-btn v-else-if="headerIdx === 6" fab small color="primary">
-      <v-icon>check</v-icon>
-    </v-btn>
+    <!--<v-btn v-else-if="headerIdx === 6" fab small color="primary">-->
+      <!--<v-icon>check</v-icon>-->
+    <!--</v-btn>-->
 
-    <v-text-field
-      v-else-if="headerIdx === 3"
-      :v-model="data"
-      label="label"
-      hide-details
-      dense
-    ></v-text-field>
+    <!--<v-text-field-->
+      <!--v-else-if="headerIdx === 3"-->
+      <!--:v-model="data"-->
+      <!--label="label"-->
+      <!--hide-details-->
+      <!--dense-->
+    <!--&gt;</v-text-field>-->
 
-    <div v-else>
+    <!--<div v-else>-->
       {{ getChildValue(docId, childIdx, header.attr) }}
-    </div>
+    <!--</div>-->
   </div>
 </template>
 

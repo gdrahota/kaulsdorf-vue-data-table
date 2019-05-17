@@ -24,7 +24,6 @@
         :is="headerCell"
         :headers="headers"
         :headerIdx="headerIdx"
-        :headerCell="headerCell"
       />
     </div>
   </div>

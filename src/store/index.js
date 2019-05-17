@@ -19,7 +19,7 @@ const headers = [
   { text: 'Head 12', attr: 'm', width: 340, minWidth: 100, },
 ]
 
-const numberOfTestRecords = 20
+const numberOfTestRecords = 500
 
 const random = () => Math.round(Math.random() * 100)
 
