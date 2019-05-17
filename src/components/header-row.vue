@@ -1,15 +1,15 @@
 <template>
-  <div class="grid-row grid-item--header" :style="{ height: headerHeight }">
+  <div class="grid-row grid-item--header">
     <div
       v-if="rowsAreSelectable"
       class="grid-item grid-col--fixed-left grid-item-system"
-      :style="{ width: '55px', left: 0 }"
+      :style="{ width: '55px', left: 0, height: headerHeight + 'px' }"
     ></div>
 
     <div
       v-if="allowShowChildren"
       class="grid-item grid-col--fixed-left grid-item-system"
-      :style="{ width: '110px', left: '55px' }"
+      :style="{ width: '110px', left: '55px', height: headerHeight + 'px' }"
     ></div>
 
     <div
@@ -18,14 +18,14 @@
       class="grid-item table-header"
       :id="'header-' + headerIdx"
       :class="{ 'grid-col--fixed-left': fixedLeftCols > headerIdx }"
-      :style="{ width: header.width + 'px', left: getLeftPosition(headerIdx) }"
+      :style="{ width: header.width + 'px', left: getLeftPosition(headerIdx), height: headerHeight + 'px' }"
     >
       <component
         :is="headerCell"
         :headers="headers"
         :headerIdx="headerIdx"
         :headerCell="headerCell"
-      ></component>
+      />
     </div>
   </div>
 </template>
@@ -41,8 +41,8 @@
     methods: {
       getLeftPosition (colPosition) {
         let left = 0
-        left += this.rowsAreSelectable ? 110 : 0
-        left += this.allowShowChildren ? 55 : 0
+        left += this.rowsAreSelectable ? 55 : 0
+        left += this.allowShowChildren ? 110 : 0
         for (let i = 0; i <= (colPosition - 1); i++) {
           if (this.fixedLeftCols > i) {
             left += this.headers[i].width

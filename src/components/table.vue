@@ -34,6 +34,7 @@
 
         <!-- main row children -->
         <child-row
+          v-if="Array.isArray(item.children) && item.children.length > 0"
           v-for="childIdx of item.children"
           :key="'child-doc-' + rowIdx + '-' + childIdx"
           :headers="headers"
@@ -129,11 +130,6 @@
         default:
           () => []
       },
-      rowCount: {
-        type: Number,
-        required:
-          true,
-      },
       fitToSpace: {
         type: Boolean,
         default:
@@ -181,8 +177,7 @@
       },
       rowsAreSelectable: {
         type: Boolean,
-        default:
-          true,
+        default: false,
       },
       getDocValueByAttrNameGetter: {
         type: Function,
@@ -191,49 +186,49 @@
       markRowIdFnc: {
         type: Function,
         default: () => {
-          console.log('markRowIdFnc NOT provided to table')
+          //console.log('markRowIdFnc NOT provided to table')
         },
       },
       toggleShowChildrenFnc: {
         type: Function,
         default: () => {
-          console.log('toggleShowChildrenFnc NOT provided to table')
+          //console.log('toggleShowChildrenFnc NOT provided to table')
         },
       },
       setHeaderWidthFnc: {
         type: Function,
         default: () => {
-          console.log('setHeaderWidthFnc NOT provided to table')
+          //console.log('setHeaderWidthFnc NOT provided to table')
         },
       },
       cell: {
         type: Object,
         default: () => {
-          console.log('cell NOT provided to table')
+          //console.log('cell NOT provided to table')
         }
       },
       child: {
         type: Object,
         default: () => {
-          console.log('child NOT provided to table')
+          //console.log('child NOT provided to table')
         }
       },
       headerCell: {
         type: Object,
         default: () => {
-          console.log('headerCell NOT provided to table')
+          //console.log('headerCell NOT provided to table')
         }
       },
       toggleShowChildren: {
         type: Object,
         default: () => {
-          console.log('toggleShowChildren NOT provided to table')
+          //console.log('toggleShowChildren NOT provided to table')
         }
       },
       toggleSelectRow: {
         type: Object,
         default: () => {
-          console.log('toggleSelectRow NOT provided to table')
+          //console.log('toggleSelectRow NOT provided to table')
         }
       },
     },
@@ -241,15 +236,6 @@
 </script>
 
 <style>
-  #table-wrapper {
-    border: 1px solid #ddd;
-    position: relative;
-    left: 0px;
-    height: calc(100vh - 150px);
-    width: calc(100% - 0px);
-    background-color: transparent;
-  }
-
   .grid-container {
     display: grid; /* This is a (hacky) way to make the .grid element size to fit its content */
     overflow: auto;
@@ -262,6 +248,10 @@
 
   .grid > .grid-row > * {
     float: left;
+  }
+
+  .grid-row.grid-item--header > div {
+    border-top: 1px solid grey;
   }
 
   .grid-item--header {
@@ -280,15 +270,18 @@
 
   .grid-item {
     background-color: white;
-    border-right: 1px solid gray;
     border-bottom: 1px solid gray;
-    overflow: visible;
-    z-index: 1;
-
-    resize: horizontal;
+    border-left: 1px solid gray;
+    overflow: auto;
+    resize: none;
     position: sticky;
     top: 0;
+    z-index: 1;
 
+  }
+
+  .grid-row > .grid-item:last-child {
+    border-right: 1px solid gray;
   }
 
   /* in component toggle-show.children.vue */

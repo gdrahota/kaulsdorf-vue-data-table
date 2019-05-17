@@ -7,23 +7,30 @@
   >
 
     <!-- select row -->
-    <select-row
-      :docId="docId"
-      :cellHeight="cellHeight"
-      :toggleSelectRow="toggleSelectRow"
-    />
+    <div
+      v-if="rowsAreSelectable"
+      class="grid-item grid-col--fixed-left"
+      :style="{ width: '55px', height: cellHeight, left: '0' }"
+    >
+      <component
+        :is="toggleSelectRow"
+        :docId="docId"
+      />
+    </div>
 
     <!-- show children -->
-    <div class="grid-item grid-col--fixed-left toggle-show-children" :style="{ height: cellHeight }">
+    <div
+      v-if="allowShowChildren"
+      class="grid-item grid-col--fixed-left toggle-show-children"
+      :style="{ height: cellHeight, left: '55px', width: '110px' }"
+    >
       <component
         :is="toggleShowChildren"
-        v-if="allowShowChildren"
         :rowIdx="rowIdx"
         :docId="docId"
         :numOfChildren="numOfChildren"
-        :style="{ width: '110px', left: '55px' }"
+        :style="{ width: '110px', left: rowsAreSelectable ? '55px': '0' }"
         :cellHeight="cellHeight"
-        :getDocValueByAttrNameGetter="getDocValueByAttrNameGetter"
         :toggleShowChildrenFnc="toggleShowChildrenFnc"
       />
     </div>
@@ -50,13 +57,7 @@
 </template>
 
 <script>
-  import SelectRow from './select-row'
-
   export default {
-    components: {
-      SelectRow,
-    },
-
     methods: {
       getLeftPosition (colPosition) {
         let left = 0
@@ -107,38 +108,34 @@
       getMarkedRowIdGetter: {
         type: Number,
       },
-      getDocValueByAttrNameGetter: {
-        type: Function,
-        required: true,
-      },
       markRowIdFnc: {
         type: Function,
         default: () => {
-          console.log('markRowIdFnc NOT provided to row')
+          //console.log('markRowIdFnc NOT provided to row')
         },
       },
       toggleShowChildrenFnc: {
         type: Function,
         default: () => {
-          console.log('toggleShowChildrenFnc NOT provided to row')
+          //console.log('toggleShowChildrenFnc NOT provided to row')
         },
       },
       cell: {
         type: Object,
         default: () => {
-          console.log('cell NOT provided to row')
+          //console.log('cell NOT provided to row')
         }
       },
       toggleSelectRow: {
         type: Object,
         default: () => {
-          console.log('toggleSelectRow NOT provided to row')
+          //console.log('toggleSelectRow NOT provided to row')
         }
       },
       toggleShowChildren: {
         type: Object,
         default: () => {
-          console.log('toggleShowChildren NOT provided to row')
+          //console.log('toggleShowChildren NOT provided to row')
         }
       },
     },

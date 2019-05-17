@@ -1,6 +1,6 @@
 {
 	"name": "kaulsdorf-vue-data-table",
-	"version": "1.1.2",
+	"version": "1.2.0",
 	"private": false,
 	"scripts": {
 		"build": "vue-cli-service build",
@@ -35,7 +35,7 @@
 		"vuetify-loader": "^1.0.5"
 	},
 	"engines": {
-		"node": "^ 8.11.0",
+		"node": "^ 9.10.0",
 		"yarn": "^1.13.0"
 	}
 }

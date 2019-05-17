@@ -95,14 +95,15 @@
   }
 </script>
 
-<style>
+<style scoped>
   #table-wrapper {
     border: 1px solid #ddd;
-    position: relative;
-    left: 0px;
-    height: calc(100vh - 130px);
-    width: calc(100% - 0px);
     background-color: white;
+    height: calc(100vh - 130px);
+    left: 0px;
+    position: relative;
+    top: 200px;
+    width: calc(100% - 0px);
   }
 
   .table-header {
@@ -123,5 +124,4 @@
     padding: 10px;
     text-align: right;
   }
-
 </style>
