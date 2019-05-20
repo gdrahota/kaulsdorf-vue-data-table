@@ -24,7 +24,6 @@
           :rowsAreSelectable="rowsAreSelectable"
           :allowShowChildren="allowShowChildren"
           :cellHeight="getCellHeight"
-          :getDocValueByAttrNameGetter="getDocValueByAttrNameGetter"
           :markRowIdFnc="markRowIdFnc"
           :toggleShowChildrenFnc="toggleShowChildrenFnc"
           :cell="cell"
@@ -45,7 +44,6 @@
           :allowShowChildren="allowShowChildren"
           :fixedLeftCols="fixedLeftCols"
           :childCellHeight="getChildCellHeight"
-          :getDocValueByAttrNameGetter="getDocValueByAttrNameGetter"
           :child="child"
         />
 
@@ -178,10 +176,6 @@
       rowsAreSelectable: {
         type: Boolean,
         default: false,
-      },
-      getDocValueByAttrNameGetter: {
-        type: Function,
-        required: true,
       },
       markRowIdFnc: {
         type: Function,
