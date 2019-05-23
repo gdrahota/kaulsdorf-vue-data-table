@@ -39,14 +39,7 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
   export default {
-    computed: {
-      ...mapGetters({
-        get: 'get',
-      }),
-    },
-
     methods: {
       getLeftPosition (colPosition) {
         let left = 55
