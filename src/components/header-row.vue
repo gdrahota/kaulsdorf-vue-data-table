@@ -52,23 +52,26 @@
     },
 
     mounted () {
-      window.setTimeout(() => {
-        this.headers.forEach((header, headerIdx) => {
-          const observer = new ResizeObserver(entries => entries.forEach(entry => {
-            const width = entry.target.offsetWidth
-            const minWidth = header.minWidth
+      if (this.setHeaderWidthFnc) {
+        console.log('setHeaderWidthFnc')
+        window.setTimeout(() => {
+          this.headers.forEach((header, headerIdx) => {
+            const observer = new ResizeObserver(entries => entries.forEach(entry => {
+              const width = entry.target.offsetWidth
+              const minWidth = header.minWidth
 
-            if (width < minWidth) {
-              window.setTimeout(() => window.document.getElementById('header-' + headerIdx).style.width = minWidth + 'px', 200)
-              this.setHeaderWidthFnc({ headerIdx: headerIdx, width: minWidth })
-            } else {
-              this.setHeaderWidthFnc({ headerIdx: headerIdx, width: width })
-            }
-          }))
+              if (width < minWidth) {
+                window.setTimeout(() => window.document.getElementById('header-' + headerIdx).style.width = minWidth + 'px', 200)
+                this.setHeaderWidthFnc({ headerIdx: headerIdx, width: minWidth })
+              } else {
+                this.setHeaderWidthFnc({ headerIdx: headerIdx, width: width })
+              }
+            }))
 
-          observer.observe(document.querySelector('#header-' + headerIdx))
-        })
-      }, 1000)
+            observer.observe(document.querySelector('#header-' + headerIdx))
+          })
+        }, 1000)
+      }
     },
 
     props: {
@@ -94,9 +97,7 @@
       },
       setHeaderWidthFnc: {
         type: Function,
-        default: () => {
-          console.log('setHeaderWidthFnc NOT provided to header-row')
-        },
+        required: false,
       },
       headerCell: {
         type: Object,

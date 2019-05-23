@@ -193,7 +193,7 @@
         default: 500
       },
       width: {
-        type: Number,
+        type: [Number, String],
         default: 500
       },
       fixedLeftCols: {
@@ -238,9 +238,7 @@
       },
       setHeaderWidthFnc: {
         type: Function,
-        default: () => {
-          //console.log('setHeaderWidthFnc NOT provided to table')
-        },
+        required: false,
       },
       cell: {
         type: Object,
