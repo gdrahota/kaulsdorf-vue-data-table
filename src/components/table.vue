@@ -1,5 +1,5 @@
 <template>
-  <div id="table-wrapper">
+  <div id="table-wrapper" :style="{ width: getControlWidth, 'max-height': getHeight }">
     <div class="grid-container" :style="{ width: getControlWidth, 'max-height': getHeight }" :class="classList">
       <div class="grid" :style="{ 'max-height': getTableHeight }">
 
@@ -51,29 +51,22 @@
     </div>
 
     <v-layout id="table-footer" wrap row>
-      <v-flex xs5>
-        <div id="paging">
-          <span id="page-of-pages">Seite {{ page }} von {{ getPages }}</span>
-          <v-pagination
-            v-model="page"
-            :length="getPages"
-            :total-visible="9"
-            circle
-          ></v-pagination>
-        </div>
-      </v-flex>
-
-      <v-flex xs4>
-        <div id="items-per-page">
-          <div id="items-per-page-label">Zeilen pro Seite</div>
-          <v-select
-            :items="[10, 20, 50, 100]"
-            v-model="itemsPerPageParam"
-            solo
-            dense
-            hide-details
-          ></v-select>
-        </div>
+      <v-flex>
+        <div id="page-of-pages">Seite {{ page }} von {{ getPages }}</div>
+        <v-pagination
+          v-model="page"
+          :length="getPages"
+          :total-visible="9"
+          circle
+        ></v-pagination>
+        <div id="items-per-page-label">Zeilen pro Seite</div>
+        <v-select
+          :items="[10, 20, 50, 100]"
+          v-model="itemsPerPageParam"
+          solo
+          dense
+          hide-details
+        ></v-select>
       </v-flex>
     </v-layout>
   </div>
@@ -157,14 +150,6 @@
     },
 
     mounted () {
-      const end = new Date()
-
-      const diff = {
-        start: this.start.getSeconds() * 1000 + this.start.getMilliseconds(),
-        end: end.getSeconds() * 1000 + end.getMilliseconds(),
-      }
-
-      console.log('mounted', diff.end - diff.start)
       window.addEventListener("keydown", this.handleKeyPress, true)
     },
 
@@ -189,7 +174,7 @@
           false
       },
       height: {
-        type: Number,
+        type: [Number, String],
         default: 500
       },
       width: {
@@ -278,7 +263,7 @@
   #table-wrapper {
     border: 1px solid #ddd;
     background-color: white;
-    height: calc(100vh - 130px);
+    height: calc(100vh - 180px);
     left: 0px;
     position: relative;
     width: 100%;
@@ -290,54 +275,49 @@
     position: static;
     height: 65px;
     width: 100%;
+    overflow: hidden;
+  }
+
+  #paging {
+    height: 70px;
+    padding: 10px;
+    position: relative;
+    top: -35px;
+    z-index: 10;
+    width: 80%;
+    white-space: nowrap;
   }
 
   #page-of-pages,
   #items-per-page-label {
-    top: 16px;
+    top: -4px;
     position: relative;
     float: left;
     font-size: 16px;
+    height: 70px;
     padding-right: 10px;
+    padding-top: 20px;
     text-align: right;
-    width: 120px;
+    width: 150px;
   }
 
   .v-pagination {
+    float: left;
+    height: 70px;
     position: relative;
-    top: 6px;
+    top: -8px;
   }
 
   .v-input {
+    float: left;
+    height: 70px;
     position: relative;
     top: 3px;
-  }
-
-  #items-per-page > div.v-input {
-    float: left;
-    width: 80px;
+    width: 100px;
   }
 </style>
 
 <style>
-  #paging {
-    height: 63px;
-    padding: 10px;
-    position: absolute;
-    top: calc(100% - 65px);
-    z-index: 10;
-    width: 80%;
-  }
-
-  #items-per-page {
-    height: 63px;
-    padding: 10px;
-    position: absolute;
-    top: calc(100% - 65px);
-    z-index: 11;
-    width: 20%;
-  }
-
   #paging > .page-of-pages {
     float: left;
     font-size: 16px;
