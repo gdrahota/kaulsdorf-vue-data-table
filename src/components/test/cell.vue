@@ -118,3 +118,9 @@
     },
   }
 </script>
+
+<style>
+  .cell-value {
+    padding: 10px;
+  }
+</style>

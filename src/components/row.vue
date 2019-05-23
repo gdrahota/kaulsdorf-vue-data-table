@@ -31,7 +31,6 @@
         :numOfChildren="numOfChildren"
         :style="{ width: '110px', left: rowsAreSelectable ? '55px': '0' }"
         :cellHeight="cellHeight"
-        :toggleShowChildrenFnc="toggleShowChildrenFnc"
       />
     </div>
 
@@ -112,12 +111,6 @@
         type: Function,
         default: () => {
           //console.log('markRowIdFnc NOT provided to row')
-        },
-      },
-      toggleShowChildrenFnc: {
-        type: Function,
-        default: () => {
-          //console.log('toggleShowChildrenFnc NOT provided to row')
         },
       },
       cell: {

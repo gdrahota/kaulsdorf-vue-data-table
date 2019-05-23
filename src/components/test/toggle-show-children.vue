@@ -14,7 +14,7 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+  import { mapGetters, mapMutations } from 'vuex'
 
   export default {
     computed: {
@@ -24,13 +24,16 @@
         rowCount: 'getRowCount',
       }),
       showChildren () {
-        return this.getDocValueByAttrNameGetter(this.docId).showChildren
+        return this.get(this.docId).showChildren
       }
     },
 
     methods: {
+      ...mapMutations({
+        toggleShowChildren: 'toggleShowChildrenMutation',
+      }),
       toggle () {
-        this.toggleShowChildrenFnc(this.docId)
+        this.toggleShowChildren(this.docId)
       }
     },
 
@@ -49,16 +52,6 @@
       },
       cellHeight: {
         type: String,
-        required: true,
-      },
-      toggleShowChildrenFnc: {
-        type: Function,
-        default: () => {
-          console.log('toggleShowChildrenFnc NOT provided to toggle-show-children')
-        },
-      },
-      getDocValueByAttrNameGetter: {
-        type: Function,
         required: true,
       },
     },

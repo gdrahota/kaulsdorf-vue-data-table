@@ -1,54 +1,81 @@
 <template>
-  <div class="grid-container" :style="{ width: getControlWidth, height: getControlHeight }" :class="classList">
-    <div class="grid">
+  <div id="table-wrapper">
+    <div class="grid-container" :style="{ width: getControlWidth, 'max-height': getHeight }" :class="classList">
+      <div class="grid" :style="{ 'max-height': getTableHeight }">
 
-      <header-row
-        :headers="headers"
-        :rowsAreSelectable="rowsAreSelectable"
-        :allowShowChildren="allowShowChildren"
-        :fixedLeftCols="fixedLeftCols"
-        :setHeaderWidthFnc="setHeaderWidthFnc"
-        :headerHeight="getHeaderHeight"
-        :headerCell="headerCell"
-      />
-
-      <template v-for="(item, rowIdx) of items">
-        <!-- main row -->
-        <row
-          :key="'doc-' + rowIdx"
+        <header-row
           :headers="headers"
-          :docId="item.id"
-          :rowIdx="rowIdx"
-          :numOfChildren="item.children"
-          :fixedLeftCols="fixedLeftCols"
-          :rowsAreSelectable="rowsAreSelectable"
-          :allowShowChildren="allowShowChildren"
-          :cellHeight="getCellHeight"
-          :markRowIdFnc="markRowIdFnc"
-          :toggleShowChildrenFnc="toggleShowChildrenFnc"
-          :cell="cell"
-          :toggleSelectRow="toggleSelectRow"
-          :toggleShowChildren="toggleShowChildren"
-        />
-
-        <!-- main row children -->
-        <child-row
-          v-if="Array.isArray(item.children) && item.children.length > 0"
-          v-for="childIdx of item.children"
-          :key="'child-doc-' + rowIdx + '-' + childIdx"
-          :headers="headers"
-          :rowIdx="rowIdx"
-          :docId="item.id"
-          :childIdx="childIdx - 1"
           :rowsAreSelectable="rowsAreSelectable"
           :allowShowChildren="allowShowChildren"
           :fixedLeftCols="fixedLeftCols"
-          :childCellHeight="getChildCellHeight"
-          :child="child"
+          :setHeaderWidthFnc="setHeaderWidthFnc"
+          :headerHeight="getHeaderHeight"
+          :headerCell="headerCell"
         />
 
-      </template>
+        <template v-for="(item, rowIdx) of getItems">
+          <!-- main row -->
+          <row
+            :key="'doc-' + rowIdx"
+            :headers="headers"
+            :docId="item.id"
+            :rowIdx="rowIdx"
+            :numOfChildren="item.children"
+            :fixedLeftCols="fixedLeftCols"
+            :rowsAreSelectable="rowsAreSelectable"
+            :allowShowChildren="allowShowChildren"
+            :cellHeight="getCellHeight"
+            :markRowIdFnc="markRowIdFnc"
+            :cell="cell"
+            :toggleSelectRow="toggleSelectRow"
+            :toggleShowChildren="toggleShowChildren"
+          />
+
+          <!--main row children -->
+          <child-row
+            v-for="childIdx of Array.from(Array(item.children).keys())"
+            v-if="allowShowChildren && item.showChildren && item.children > 0"
+            :key="'child-doc-' + rowIdx + '-' + childIdx"
+            :headers="headers"
+            :rowIdx="rowIdx"
+            :docId="item.id"
+            :childIdx="childIdx"
+            :rowsAreSelectable="rowsAreSelectable"
+            :allowShowChildren="allowShowChildren"
+            :fixedLeftCols="fixedLeftCols"
+            :childCellHeight="getChildCellHeight"
+            :child="child"
+          />
+        </template>
+      </div>
     </div>
+
+    <v-layout id="table-footer" wrap row>
+      <v-flex xs5>
+        <div id="paging">
+          <span id="page-of-pages">Seite {{ page }} von {{ getPages }}</span>
+          <v-pagination
+            v-model="page"
+            :length="getPages"
+            :total-visible="9"
+            circle
+          ></v-pagination>
+        </div>
+      </v-flex>
+
+      <v-flex xs4>
+        <div id="items-per-page">
+          <div id="items-per-page-label">Zeilen pro Seite</div>
+          <v-select
+            :items="[10, 20, 50, 100]"
+            v-model="itemsPerPageParam"
+            solo
+            dense
+            hide-details
+          ></v-select>
+        </div>
+      </v-flex>
+    </v-layout>
   </div>
 </template>
 
@@ -63,6 +90,7 @@
     },
 
     created () {
+      this.start = new Date()
       console.log('kaulsdorf-vue-data-table => Vue instance created')
     },
 
@@ -73,8 +101,13 @@
     },
 
     computed: {
-      getControlHeight () {
-        return this.fitToSpace ? '100%' : this.height + 'px'
+      getHeight () {
+        const height = this.fitToSpace ? '100%' : this.height + 'px'
+        return 'calc(' + height + ' - 60px)'
+      },
+      getTableHeight () {
+        const height = this.fitToSpace ? '100%' : this.height + 'px'
+        return 'calc(' + height + ' - 50px)'
       },
       getControlWidth () {
         return this.fitToSpace ? '100%' : this.width + 'px'
@@ -88,6 +121,20 @@
       getHeaderHeight () {
         return typeof this.headerHeight === "number" ? this.headerHeight : parseInt(this.headerHeight)
       },
+      getItems () {
+        return this.items.slice((this.page - 1) * this.itemsPerPageParam, this.page * this.itemsPerPageParam)
+      },
+      getPages () {
+        return Math.ceil(this.items.length / this.itemsPerPageParam)
+      },
+    },
+
+    data () {
+      return {
+        page: 1,
+        start: null,
+        itemsPerPageParam: this.itemsPerPage,
+      }
     },
 
     methods: {
@@ -110,6 +157,14 @@
     },
 
     mounted () {
+      const end = new Date()
+
+      const diff = {
+        start: this.start.getSeconds() * 1000 + this.start.getMilliseconds(),
+        end: end.getSeconds() * 1000 + end.getMilliseconds(),
+      }
+
+      console.log('mounted', diff.end - diff.start)
       window.addEventListener("keydown", this.handleKeyPress, true)
     },
 
@@ -135,18 +190,19 @@
       },
       height: {
         type: Number,
-        default:
-          500
+        default: 500
       },
       width: {
         type: Number,
-        default:
-          1000
+        default: 500
       },
       fixedLeftCols: {
         type: Number,
-        default:
-          0
+        default: 0
+      },
+      itemsPerPage: {
+        type: Number,
+        default: 20
       },
       classList: {
         type: String,
@@ -155,18 +211,15 @@
       },
       cellHeight: {
         type: [Number, String],
-        default:
-          20
+        default: 20
       },
       childCellHeight: {
         type: [Number, String],
-        default:
-          20
+        default: 20
       },
       headerHeight: {
         type: [Number, String],
-        default:
-          40
+        default: 40
       },
       allowShowChildren: {
         type: Boolean,
@@ -181,12 +234,6 @@
         type: Function,
         default: () => {
           //console.log('markRowIdFnc NOT provided to table')
-        },
-      },
-      toggleShowChildrenFnc: {
-        type: Function,
-        default: () => {
-          //console.log('toggleShowChildrenFnc NOT provided to table')
         },
       },
       setHeaderWidthFnc: {
@@ -229,7 +276,79 @@
   }
 </script>
 
+<style scoped>
+  #table-wrapper {
+    border: 1px solid #ddd;
+    background-color: white;
+    height: calc(100vh - 130px);
+    left: 0px;
+    position: relative;
+    width: 100%;
+  }
+
+  #table-footer {
+    background-color: #eee;
+    padding-top: 5px !important;
+    position: static;
+    height: 65px;
+    width: 100%;
+  }
+
+  #page-of-pages,
+  #items-per-page-label {
+    top: 16px;
+    position: relative;
+    float: left;
+    font-size: 16px;
+    padding-right: 10px;
+    text-align: right;
+    width: 120px;
+  }
+
+  .v-pagination {
+    position: relative;
+    top: 6px;
+  }
+
+  .v-input {
+    position: relative;
+    top: 3px;
+  }
+
+  #items-per-page > div.v-input {
+    float: left;
+    width: 80px;
+  }
+</style>
+
 <style>
+  #paging {
+    height: 63px;
+    padding: 10px;
+    position: absolute;
+    top: calc(100% - 65px);
+    z-index: 10;
+    width: 80%;
+  }
+
+  #items-per-page {
+    height: 63px;
+    padding: 10px;
+    position: absolute;
+    top: calc(100% - 65px);
+    z-index: 11;
+    width: 20%;
+  }
+
+  #paging > .page-of-pages {
+    float: left;
+    font-size: 16px;
+    top: -5px !important;
+    position: relative;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
   .grid-container {
     display: grid; /* This is a (hacky) way to make the .grid element size to fit its content */
     overflow: auto;
@@ -271,11 +390,18 @@
     position: sticky;
     top: 0;
     z-index: 1;
+  }
 
+  .grid-row > .grid-item:first-child {
+    border-left: none;
   }
 
   .grid-row > .grid-item:last-child {
     border-right: 1px solid gray;
+  }
+
+  .grid-row:last-child > .grid-item {
+    border-bottom: none;
   }
 
   /* in component toggle-show.children.vue */
@@ -304,38 +430,6 @@
     width: 5px;
     cursor: ew-resize;
   }
-
-  /*.grid > .grid-col:first-child > div > .grid-item {*/
-  /*border-left: 1px solid transparent;*/
-  /*}*/
-
-  /*.grid > .grid-col:last-child > div > .grid-item {*/
-  /*border-right: 1px solid transparent;*/
-  /*}*/
-
-  /*.grid > .grid-col > div > .grid-item:first-child {*/
-  /*border-top: 1px solid transparent;*/
-  /*}*/
-
-  /*.grid > .grid-col > div > .grid-item:last-child {*/
-  /*border-bottom: 1px solid #ddd;*/
-  /*}*/
-
-  /*.grid > .grid-col:first-child > .marked > .grid-item {*/
-  /*border-left: 1px solid #f73636;*/
-  /*}*/
-
-  /*.grid > .grid-col:last-child > .marked > .grid-item {*/
-  /*border-right: 1px solid #f73636;*/
-  /*}*/
-
-  /*.grid > .grid-col > .marked > .grid-item:first-child {*/
-  /*border-top: 1px solid #f73636;*/
-  /*}*/
-
-  /*.grid > .grid-col > .marked > .grid-item:last-child {*/
-  /*border-bottom: 1px solid #f73636;*/
-  /*}*/
 
   .active {
     background-color: aliceblue;

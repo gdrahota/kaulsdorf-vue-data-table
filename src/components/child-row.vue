@@ -1,6 +1,5 @@
 <template>
   <div
-    v-if="show"
     :key="'child-row-' + rowIdx + '-' + childIdx"
     class="grid-row child-row"
   >
@@ -40,17 +39,17 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
   export default {
     computed: {
-      show () {
-        return this.getDocValueByAttrNameGetter(this.docId).showChildren
-      }
+      ...mapGetters({
+        get: 'get',
+      }),
     },
 
     methods: {
       getLeftPosition (colPosition) {
-        let left = 0
-        left += this.rowsAreSelectable ? 55 : 0
+        let left = 55
         left += this.allowShowChildren ? 110 : 0
         for (let i = 0; i <= (colPosition - 1); i++) {
           if (this.fixedLeftCols > i) {
@@ -90,13 +89,13 @@
         type: Boolean,
         required: true,
       },
+      show: {
+        type: Boolean,
+        required: false,
+      },
       allowShowChildren: {
         type: Boolean,
-        required: true,
-      },
-      getDocValueByAttrNameGetter: {
-        type: Function,
-        required: true,
+        required: false,
       },
       child: {
         type: Object,

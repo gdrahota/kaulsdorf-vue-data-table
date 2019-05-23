@@ -19,42 +19,46 @@ const headers = [
   { text: 'Head 12', attr: 'm', width: 340, minWidth: 100, },
 ]
 
-const numberOfTestRecords = 500
+const numberOfTestRecords = 1000
 
 const random = () => Math.round(Math.random() * 100)
 
-const items = Array
-  .from(Array(numberOfTestRecords).keys())
-  .map(i => {
-    return {
-      _id: 'idx-' + i,
-      a: random(),
-      b: random(),
-      c: false,
-      d: false,
-      e: random(),
-      f: random(),
-      g: random(),
-      h: random(),
-      i: random(),
-      j: random(),
-      k: random(),
-      l: random(),
-      m: random(),
-      showChildren: false,
-      children: [
-        { a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7, i: 8, j: 9, k: 10, l: 11, m: 12, },
-        { a: 10, b: 11, c: 12, d: 13, e: 14, f: 15, g: 16, h: 17, i: 18, j: 19, k: 110, l: 111, m: 112, },
-      ],
-    }
-  })
+const getItems = () => {
+  const items = {}
+  Array
+    .from(Array(numberOfTestRecords).keys())
+    .map(i => {
+      return {
+        _id: 'idx-' + i,
+        a: random(),
+        b: random(),
+        c: false,
+        d: false,
+        e: random(),
+        f: random(),
+        g: random(),
+        h: random(),
+        i: random(),
+        j: random(),
+        k: random(),
+        l: random(),
+        m: random(),
+        showChildren: false,
+        children: [
+          { a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7, i: 8, j: 9, k: 10, l: 11, m: 12, },
+          { a: 10, b: 11, c: 12, d: 13, e: 14, f: 15, g: 16, h: 17, i: 18, j: 19, k: 110, l: 111, m: 112, },
+        ],
+      }
+    })
+    .forEach(item => {
+      items[item._id] = item
+    })
+
+  return items
+}
 
 const setRowValueMutation = (state, { id, attrName, value }) => {
-  state.items.forEach(item => {
-    if (item._id === id) {
-      item[attrName] = value
-    }
-  })
+  state.items[id][attrName] = value
 }
 
 const markRowIdMutation = (state, id) => {
@@ -62,11 +66,7 @@ const markRowIdMutation = (state, id) => {
 }
 
 const toggleShowChildrenMutation = (state, id) => {
-  state.items.forEach(item => {
-    if (item._id === id) {
-      item.showChildren = !item.showChildren
-    }
-  })
+  state.items[id].showChildren = !state.items[id].showChildren
 }
 
 const setHeaderWidthMutation = (state, { headerIdx, width }) => {
@@ -87,14 +87,14 @@ const toggleSelectedRowsMutation = (state, docId) => {
 }
 
 const getRowValue = state => (docId, attrName) => {
-  const row = state.items.find(item => item._id === docId)
+  const row = state.items[docId]
   return row && [null, undefined].indexOf(row[attrName]) === -1 ? row[attrName] : null
 }
 
 export default new Vuex.Store({
   state: {
     headers,
-    items,
+    items: getItems(),
     selectedRowIds: [],
     markedRowId: null,
   },
@@ -106,11 +106,11 @@ export default new Vuex.Store({
     setHeaderWidthMutation,
   },
   getters: {
-    getAll: state => state.items,
-    get: state => docId => state.items.find(item => item._id === docId),
-    getChildValue: state => (docId, childIdx, attrName) => state.items.find(item => item._id === docId).children[childIdx][attrName],
+    getAll: state => Object.values(state.items),
+    get: state => docId => state.items[docId],
+    getChildValue: state => (docId, childIdx, attrName) => state.items[docId].children[childIdx][attrName],
     getRowValue,
-    getRowCount: state => state.items.length,
+    getRowCount: state => Object.keys(state.items).length,
     getHeaders: state => state.headers,
     getSelectedRowIds: state => state.selectedRowIds,
     getMarkedRowId: state => state.markedRowId,

@@ -5,19 +5,20 @@
     <!--<v-switch v-else-if="headerIdx === 5" color="primary" v-model="data"/>-->
 
     <!--<v-btn v-else-if="headerIdx === 6" fab small color="primary">-->
-      <!--<v-icon>check</v-icon>-->
+    <!--<v-icon>check</v-icon>-->
     <!--</v-btn>-->
 
     <!--<v-text-field-->
-      <!--v-else-if="headerIdx === 3"-->
-      <!--:v-model="data"-->
-      <!--label="label"-->
-      <!--hide-details-->
-      <!--dense-->
+    <!--v-else-if="headerIdx === 3"-->
+    <!--:v-model="data"-->
+    <!--label="label"-->
+    <!--hide-details-->
+    <!--dense-->
     <!--&gt;</v-text-field>-->
 
     <!--<div v-else>-->
-      {{ getChildValue(docId, childIdx, header.attr) }}
+    {{docId}} - {{childIdx}} - {{header.attr}} =>
+    {{ getChildValue(docId, childIdx, header.attr) }}
     <!--</div>-->
   </div>
 </template>

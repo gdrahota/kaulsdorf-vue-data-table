@@ -16,7 +16,6 @@
           @columnResized="resizeColumn"
           rowsAreSelectable
           :markRowIdFnc="markRowIdMutation"
-          :getDocValueByAttrNameGetter="get"
           :toggleShowChildrenFnc="toggleShowChildrenMutation"
           :setHeaderWidthFnc="setHeaderWidthMutation"
           :cell="cell"
@@ -58,6 +57,7 @@
           return {
             id: item._id,
             children: item.children.length,
+            showChildren: item.showChildren,
           }
         })
       }
@@ -96,15 +96,14 @@
 </script>
 
 <style scoped>
-  #table-wrapper {
-    border: 1px solid #ddd;
-    background-color: white;
-    height: calc(100vh - 130px);
-    left: 0px;
-    position: relative;
-    top: 200px;
-    width: calc(100% - 0px);
-  }
+  /*#table-wrapper {*/
+    /*border: 1px solid #ddd;*/
+    /*background-color: white;*/
+    /*height: calc(100vh - 200px);*/
+    /*left: 0px;*/
+    /*position: relative;*/
+    /*width: 100%;*/
+  /*}*/
 
   .table-header {
     background-color: white;
