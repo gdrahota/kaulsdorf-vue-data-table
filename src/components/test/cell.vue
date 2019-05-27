@@ -65,7 +65,6 @@
           return this.rowValue(this.docId, this.header.attr)
         },
         set (value) {
-          console.log('set', value)
           this.setRowValue({ id: this.docId, attrName: this.header.attr, value })
         }
       }

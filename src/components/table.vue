@@ -370,6 +370,10 @@
     z-index: 1;
   }
 
+  .grid-row:nth-child(even) .grid-item {
+    background-color: rgba(238, 238, 238, 0.5);
+  }
+
   .grid-row > .grid-item:first-child {
     border-left: none;
   }
