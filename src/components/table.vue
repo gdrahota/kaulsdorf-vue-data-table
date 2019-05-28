@@ -52,6 +52,17 @@
 
     <v-layout id="table-footer" wrap row>
       <v-flex>
+        <div id="total-number">
+          <span v-if="items.length === 0"><i>keine Einträge</i></span>
+          <span v-else-if="items.length === 1">1 Eintrag</span>
+          <span v-else>{{ items.length }} Einträge</span>
+        </div>
+        <v-pagination
+          v-model="page"
+          :length="getPages"
+          :total-visible="9"
+          circle
+        />
         <v-select
           :items="[10, 20, 50, 100]"
           v-model="itemsPerPageParam"
@@ -60,12 +71,6 @@
           dense
           hide-details
           class="items-per-page"
-        />
-        <v-pagination
-          v-model="page"
-          :length="getPages"
-          :total-visible="9"
-          circle
         />
       </v-flex>
     </v-layout>
@@ -276,6 +281,18 @@
     height: 65px;
     width: 100%;
     overflow: hidden;
+  }
+
+  #total-number {
+    position: relative;
+    float: left;
+    font-size: 16px;
+    height: 40px;
+    padding: 7px 10px;
+    text-align: right;
+    /*border: 1px solid;*/
+    /*border-radius: 35px;*/
+    margin: 8px;
   }
 
   .items-per-page {
