@@ -265,7 +265,10 @@
     watch: {
       itemsPerPageParam () {
         this.page = 1
-      }
+      },
+      items () {
+        this.page = 1
+      },
     }
   }
 </script>
@@ -372,7 +375,7 @@
   }
 
   .grid-row:nth-child(even) .grid-item {
-    background-color: rgba(238, 238, 238, 0.5);
+    background-color: rgb(241, 241, 241);
   }
 
   .grid-row > .grid-item:first-child {
