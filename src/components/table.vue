@@ -62,7 +62,7 @@
           :length="getPages"
           :total-visible="9"
           circle
-        />
+        ></v-pagination>
         <v-select
           :items="[10, 20, 50, 100]"
           v-model="itemsPerPageParam"
@@ -71,7 +71,7 @@
           dense
           hide-details
           class="items-per-page"
-        />
+        ></v-select>
       </v-flex>
     </v-layout>
   </div>
@@ -261,6 +261,12 @@
         }
       },
     },
+
+    watch: {
+      itemsPerPageParam () {
+        this.page = 1
+      }
+    }
   }
 </script>
 
