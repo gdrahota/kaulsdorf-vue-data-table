@@ -52,21 +52,21 @@
 
     <v-layout id="table-footer" wrap row>
       <v-flex>
-        <div id="page-of-pages">Seite {{ page }} von {{ getPages }}</div>
+        <v-select
+          :items="[10, 20, 50, 100]"
+          v-model="itemsPerPageParam"
+          suffix="Einträge pro Seite"
+          solo
+          dense
+          hide-details
+          class="items-per-page"
+        />
         <v-pagination
           v-model="page"
           :length="getPages"
           :total-visible="9"
           circle
-        ></v-pagination>
-        <div id="items-per-page-label">Zeilen pro Seite</div>
-        <v-select
-          :items="[10, 20, 50, 100]"
-          v-model="itemsPerPageParam"
-          solo
-          dense
-          hide-details
-        ></v-select>
+        />
       </v-flex>
     </v-layout>
   </div>
@@ -261,7 +261,6 @@
 
 <style scoped>
   #table-wrapper {
-    border: 1px solid #ddd;
     background-color: white;
     height: calc(100vh - 180px);
     left: 0px;
@@ -271,6 +270,7 @@
 
   #table-footer {
     background-color: #eee;
+    border: 1px solid;
     padding-top: 5px !important;
     position: static;
     height: 65px;
@@ -278,27 +278,15 @@
     overflow: hidden;
   }
 
-  #paging {
-    height: 70px;
-    padding: 10px;
-    position: relative;
-    top: -35px;
-    z-index: 10;
-    width: 80%;
-    white-space: nowrap;
-  }
-
-  #page-of-pages,
-  #items-per-page-label {
+  .items-per-page {
     top: -4px;
     position: relative;
     float: left;
     font-size: 16px;
     height: 70px;
-    padding-right: 10px;
-    padding-top: 20px;
+    padding: 8px 10px;
     text-align: right;
-    width: 150px;
+    width: 230px;
   }
 
   .v-pagination {
@@ -306,14 +294,6 @@
     height: 70px;
     position: relative;
     top: -8px;
-  }
-
-  .v-input {
-    float: left;
-    height: 70px;
-    position: relative;
-    top: 3px;
-    width: 100px;
   }
 </style>
 
@@ -361,8 +341,6 @@
 
   .grid-item {
     background-color: white;
-    border-bottom: 1px solid gray;
-    border-left: 1px solid gray;
     overflow: auto;
     resize: none;
     position: sticky;
@@ -375,7 +353,7 @@
   }
 
   .grid-row > .grid-item:first-child {
-    border-left: none;
+    border-left: 1px solid gray;
   }
 
   .grid-row > .grid-item:last-child {
