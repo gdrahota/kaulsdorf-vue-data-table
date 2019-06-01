@@ -349,6 +349,7 @@
 
   .grid-row.grid-item--header > div {
     border-top: 1px solid grey;
+    border-bottom: 1px solid grey;
   }
 
   .grid-item--header {
