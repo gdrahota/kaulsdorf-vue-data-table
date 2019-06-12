@@ -1,56 +1,56 @@
 <template>
-  <div id="table-wrapper" :style="{ width: getControlWidth, 'max-height': getHeight }">
-    <div class="grid-container" :style="{ width: getControlWidth, 'max-height': getHeight }" :class="classList">
-      <div class="grid" :style="{ 'max-height': getTableHeight }">
+  <div :style="{ width: getControlWidth, 'max-height': getHeight }" id="table-wrapper">
+    <div :class="classList" :style="{ width: getControlWidth, 'max-height': getHeight }" class="grid-container">
+      <div :style="{ 'max-height': getTableHeight }" class="grid">
 
         <header-row
-          :headers="headers"
-          :rowsAreSelectable="rowsAreSelectable"
           :allowShowChildren="allowShowChildren"
           :fixedLeftCols="fixedLeftCols"
-          :setHeaderWidthFnc="setHeaderWidthFnc"
-          :headerHeight="getHeaderHeight"
           :headerCell="headerCell"
+          :headerHeight="getHeaderHeight"
+          :headers="headers"
+          :rowsAreSelectable="rowsAreSelectable"
+          :setHeaderWidthFnc="setHeaderWidthFnc"
         />
 
         <template v-for="(item, rowIdx) of getItems">
           <!-- main row -->
           <row
-            :key="'doc-' + rowIdx"
-            :headers="headers"
-            :docId="item.id"
-            :rowIdx="rowIdx"
-            :numOfChildren="item.children"
-            :fixedLeftCols="fixedLeftCols"
-            :rowsAreSelectable="rowsAreSelectable"
             :allowShowChildren="allowShowChildren"
-            :cellHeight="getCellHeight"
-            :markRowIdFnc="markRowIdFnc"
             :cell="cell"
+            :cellHeight="getCellHeight"
+            :docId="item.id"
+            :fixedLeftCols="fixedLeftCols"
+            :headers="headers"
+            :key="'doc-' + rowIdx"
+            :markRowIdFnc="markRowIdFnc"
+            :numOfChildren="item.children"
+            :rowIdx="rowIdx"
+            :rowsAreSelectable="rowsAreSelectable"
             :toggleSelectRow="toggleSelectRow"
             :toggleShowChildren="toggleShowChildren"
           />
 
           <!--main row children -->
           <child-row
-            v-for="childIdx of Array.from(Array(item.children).keys())"
-            v-if="allowShowChildren && item.showChildren && item.children > 0"
-            :key="'child-doc-' + rowIdx + '-' + childIdx"
-            :headers="headers"
-            :rowIdx="rowIdx"
-            :docId="item.id"
-            :childIdx="childIdx"
-            :rowsAreSelectable="rowsAreSelectable"
             :allowShowChildren="allowShowChildren"
-            :fixedLeftCols="fixedLeftCols"
-            :childCellHeight="getChildCellHeight"
             :child="child"
+            :childCellHeight="getChildCellHeight"
+            :childIdx="childIdx"
+            :docId="item.id"
+            :fixedLeftCols="fixedLeftCols"
+            :headers="headers"
+            :key="'child-doc-' + rowIdx + '-' + childIdx"
+            :rowIdx="rowIdx"
+            :rowsAreSelectable="rowsAreSelectable"
+            v-for="childIdx of Array.from(Array(item.children).keys())"
+            v-if="allowShowChildren && item.children > 0 && showThisChildren[item.id]"
           />
         </template>
       </div>
     </div>
 
-    <v-layout id="table-footer" wrap row>
+    <v-layout id="table-footer" row wrap>
       <v-flex>
         <div id="total-number">
           <span v-if="items.length === 0"><i>keine Einträge</i></span>
@@ -58,19 +58,19 @@
           <span v-else>{{ items.length }} Einträge</span>
         </div>
         <v-pagination
-          v-model="page"
           :length="getPages"
           :total-visible="9"
           circle
+          v-model="page"
         ></v-pagination>
         <v-select
           :items="[10, 20, 50, 100]"
-          v-model="itemsPerPageParam"
-          suffix="Einträge pro Seite"
-          solo
+          class="items-per-page"
           dense
           hide-details
-          class="items-per-page"
+          solo
+          suffix="Einträge pro Seite"
+          v-model="itemsPerPageParam"
         ></v-select>
       </v-flex>
     </v-layout>
@@ -108,7 +108,7 @@
         return 'calc(' + height + ' - 50px)'
       },
       getControlWidth () {
-        return this.fitToSpace ? '100%' : this.width + 'px'
+        return this.fitToSpace ? '100%' : this.width ? this.width + 'px' : '100%'
       },
       getCellHeight () {
         return typeof this.cellHeight === "number" ? this.cellHeight + 'px' : this.cellHeight
@@ -139,7 +139,7 @@
       getLeftPosition (colPosition) {
         let left = 0
         left += this.rowsAreSelectable ? 55 : 0
-        left += this.allowShowChildren ? 110 : 0
+        left += this.allowShowChildren ? 111 : 0
         for (let i = 0; i <= (colPosition - 1); i++) {
           if (this.fixedLeftCols > i) {
             left += this.headers[i].width
@@ -184,7 +184,7 @@
       },
       width: {
         type: [Number, String],
-        default: 500
+        required: false,
       },
       fixedLeftCols: {
         type: Number,
@@ -260,6 +260,12 @@
           //console.log('toggleSelectRow NOT provided to table')
         }
       },
+      showThisChildren: {
+        type: Object,
+        default: () => {
+          return {}
+        },
+      },
     },
 
     watch: {
@@ -299,8 +305,6 @@
     height: 40px;
     padding: 7px 10px;
     text-align: right;
-    /*border: 1px solid;*/
-    /*border-radius: 35px;*/
     margin: 8px;
   }
 
@@ -436,7 +440,7 @@
 
   .child-row > * {
     background-color: rgba(238, 238, 238, 0.5);
-    padding: 15px 10px;
     text-align: right;
+    padding: 0;
   }
 </style>

@@ -22,14 +22,15 @@
     <div
       v-if="allowShowChildren"
       class="grid-item grid-col--fixed-left toggle-show-children"
-      :style="{ height: cellHeight, left: '55px', width: '110px' }"
+      :style="{ height: cellHeight, left: '55px' }"
+      :docId="docId"
     >
       <component
         :is="toggleShowChildren"
         :rowIdx="rowIdx"
         :docId="docId"
         :numOfChildren="numOfChildren"
-        :style="{ width: '110px', left: rowsAreSelectable ? '55px': '0' }"
+        :style="{ width: '110px' }"
         :cellHeight="cellHeight"
       />
     </div>
@@ -61,7 +62,7 @@
       getLeftPosition (colPosition) {
         let left = 0
         left += this.rowsAreSelectable ? 55 : 0
-        left += this.allowShowChildren ? 110 : 0
+        left += this.allowShowChildren ? 111 : 0
         for (let i = 0; i <= (colPosition - 1); i++) {
           if (this.fixedLeftCols > i) {
             left += this.headers[i].width

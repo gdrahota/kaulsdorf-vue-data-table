@@ -120,7 +120,7 @@
   }
 
   .grid-row.child > .grid-item.child-value {
-    padding: 10px;
+    /*padding: 10px;*/
     text-align: right;
   }
 </style>

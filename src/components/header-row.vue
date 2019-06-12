@@ -9,7 +9,7 @@
     <div
       v-if="allowShowChildren"
       class="grid-item grid-col--fixed-left grid-item-system"
-      :style="{ width: '110px', left: '55px', height: headerHeight + 'px' }"
+      :style="{ width: '111px', left: '55px', height: headerHeight + 'px' }"
     ></div>
 
     <div
@@ -41,7 +41,7 @@
       getLeftPosition (colPosition) {
         let left = 0
         left += this.rowsAreSelectable ? 55 : 0
-        left += this.allowShowChildren ? 110 : 0
+        left += this.allowShowChildren ? 111 : 0
         for (let i = 0; i <= (colPosition - 1); i++) {
           if (this.fixedLeftCols > i) {
             left += this.headers[i].width

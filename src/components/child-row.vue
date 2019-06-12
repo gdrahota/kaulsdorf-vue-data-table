@@ -4,34 +4,34 @@
     class="grid-row child-row"
   >
     <div
-      v-if="rowsAreSelectable"
-      class="grid-item grid-item--header grid-col--fixed-left"
       :style="{ width: '55px', left: 0 }"
-    >
-    </div>
-
-    <div
-      v-if="allowShowChildren"
       class="grid-item grid-item--header grid-col--fixed-left"
-      :style="{ width: '110px', left: '55px' }"
+      v-if="rowsAreSelectable"
     >
     </div>
 
     <div
-      v-for="(header, headerIdx) of headers"
-      :key="'child-cell-' + rowIdx + childIdx + headerIdx"
-      class="grid-item child-value"
+      :style="{ width: '111px', left: '55px' }"
+      class="grid-item grid-item--header grid-col--fixed-left"
+      v-if="allowShowChildren"
+    >
+    </div>
+
+    <div
       :class="{ 'grid-col--fixed-left': fixedLeftCols > headerIdx }"
+      :key="'child-cell-' + rowIdx + childIdx + headerIdx"
       :style="{ width: header.width + 'px', left: getLeftPosition(headerIdx), height: childCellHeight }"
+      class="grid-item child-value"
+      v-for="(header, headerIdx) of headers"
     >
       <component
-        :is="child"
-        :headers="headers"
+        :childIdx="childIdx"
+        :docId="docId"
         :header="header"
         :headerIdx="headerIdx"
+        :headers="headers"
+        :is="child"
         :rowIdx="rowIdx"
-        :docId="docId"
-        :childIdx="childIdx"
       ></component>
     </div>
 
@@ -43,7 +43,7 @@
     methods: {
       getLeftPosition (colPosition) {
         let left = 55
-        left += this.allowShowChildren ? 110 : 0
+        left += this.allowShowChildren ? 111 : 0
         for (let i = 0; i <= (colPosition - 1); i++) {
           if (this.fixedLeftCols > i) {
             left += this.headers[i].width
