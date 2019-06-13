@@ -3,7 +3,7 @@
     class="grid-row"
     :style="{ height: cellHeight }"
     :key="'row-' + rowIdx"
-    @click="markRowIdFnc(rowIdx)"
+    @click="markRowIdFnc(docId)"
   >
 
     <!-- select row -->
