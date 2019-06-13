@@ -147,19 +147,6 @@
         }
         return left + 'px'
       },
-      handleKeyPress (e) {
-        if (this.rowsAreSelectable && (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'c') {
-          this.rowsAreSelectable(this.selected.map(idx => this.items[idx]))
-        }
-      },
-    },
-
-    mounted () {
-      window.addEventListener("keydown", this.handleKeyPress, true)
-    },
-
-    beforeDestroy () {
-      window.removeEventListener("keydown", this.handleKeyPress, true)
     },
 
     props: {
