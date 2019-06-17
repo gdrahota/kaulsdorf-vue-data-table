@@ -1,16 +1,17 @@
 <template>
   <div
     class="grid-row"
-    :style="{ height: cellHeight }"
+    :style="{ maxHeight: maxCellHeight + 'px' }"
     :key="'row-' + rowIdx"
     @click="markRowIdFnc(docId)"
+    @mouseenter="setHoveredOverItemFnc(docId)"
   >
 
     <!-- select row -->
     <div
       v-if="rowsAreSelectable"
       class="grid-item grid-col--fixed-left"
-      :style="{ width: '55px', height: cellHeight, left: '0' }"
+      :style="{ width: '55px', left: '0' }"
     >
       <component
         :is="toggleSelectRow"
@@ -22,7 +23,7 @@
     <div
       v-if="allowShowChildren"
       class="grid-item grid-col--fixed-left toggle-show-children"
-      :style="{ height: cellHeight, left: '55px' }"
+      :style="{ left: '55px' }"
       :docId="docId"
     >
       <component
@@ -41,7 +42,7 @@
         :key="'cell-' + rowIdx + '-' + headerIdx"
         class="grid-item cell-value"
         :class="{ 'grid-col--fixed-left': fixedLeftCols > headerIdx, active: getMarkedRowIdGetter === rowIdx }"
-        :style="{ width: header.width + 'px', left: getLeftPosition(headerIdx), height: cellHeight }"
+        :style="{ width: header.width + 'px', left: getLeftPosition(headerIdx), maxHeight: maxCellHeight + 'px' }"
       >
         <component
           :is="cell"
@@ -101,8 +102,8 @@
         type: Boolean,
         default: false,
       },
-      cellHeight: {
-        type: String,
+      maxCellHeight: {
+        type: Number,
         required: true,
       },
       getMarkedRowIdGetter: {
@@ -131,6 +132,10 @@
         default: () => {
           //console.log('toggleShowChildren NOT provided to row')
         }
+      },
+      setHoveredOverItemFnc: {
+        type: Function,
+        default: false,
       },
     },
   }

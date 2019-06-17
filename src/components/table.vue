@@ -5,12 +5,12 @@
 
         <header-row
           :allowShowChildren="allowShowChildren"
+          :copySelectionToClipboard="copySelectionToClipboard"
           :fixedLeftCols="fixedLeftCols"
           :headerCell="headerCell"
           :headerHeight="getHeaderHeight"
           :headers="headers"
           :rowsAreSelectable="rowsAreSelectable"
-          :setHeaderWidthFnc="setHeaderWidthFnc"
         />
 
         <template v-for="(item, rowIdx) of getItems">
@@ -18,15 +18,16 @@
           <row
             :allowShowChildren="allowShowChildren"
             :cell="cell"
-            :cellHeight="getCellHeight"
             :docId="item.id"
             :fixedLeftCols="fixedLeftCols"
             :headers="headers"
             :key="'doc-' + rowIdx"
             :markRowIdFnc="markRowIdFnc"
+            :maxCellHeight="maxCellHeight"
             :numOfChildren="item.children"
             :rowIdx="rowIdx"
             :rowsAreSelectable="rowsAreSelectable"
+            :setHoveredOverItemFnc="setHoveredOverItemFnc"
             :toggleSelectRow="toggleSelectRow"
             :toggleShowChildren="toggleShowChildren"
           />
@@ -35,12 +36,12 @@
           <child-row
             :allowShowChildren="allowShowChildren"
             :child="child"
-            :childCellHeight="getChildCellHeight"
             :childIdx="childIdx"
             :docId="item.id"
             :fixedLeftCols="fixedLeftCols"
             :headers="headers"
             :key="'child-doc-' + rowIdx + '-' + childIdx"
+            :maxChildCellHeight="maxChildCellHeight"
             :rowIdx="rowIdx"
             :rowsAreSelectable="rowsAreSelectable"
             v-for="childIdx of Array.from(Array(item.children).keys())"
@@ -50,28 +51,23 @@
       </div>
     </div>
 
-    <v-layout id="table-footer" row wrap>
+    <v-layout class="elevation-2" id="table-footer" row wrap>
       <v-flex>
-        <div id="total-number">
-          <span v-if="items.length === 0"><i>keine Einträge</i></span>
-          <span v-else-if="items.length === 1">1 Eintrag</span>
-          <span v-else>{{ items.length }} Einträge</span>
-        </div>
+        <div class="label">Zeilen pro Seite:</div>
+        <v-select
+          :items="[10, 20, 50, 100]"
+          class="items-per-page"
+          dense
+          hide-details
+          solo-
+          v-model="itemsPerPageParam"
+        ></v-select>
         <v-pagination
           :length="getPages"
           :total-visible="9"
           circle
           v-model="page"
         ></v-pagination>
-        <v-select
-          :items="[10, 20, 50, 100]"
-          class="items-per-page"
-          dense
-          hide-details
-          solo
-          suffix="Einträge pro Seite"
-          v-model="itemsPerPageParam"
-        ></v-select>
       </v-flex>
     </v-layout>
   </div>
@@ -109,12 +105,6 @@
       },
       getControlWidth () {
         return this.fitToSpace ? '100%' : this.width ? this.width + 'px' : '100%'
-      },
-      getCellHeight () {
-        return typeof this.cellHeight === "number" ? this.cellHeight + 'px' : this.cellHeight
-      },
-      getChildCellHeight () {
-        return typeof this.childCellHeight === "number" ? this.childCellHeight + 'px' : this.childCellHeight
       },
       getHeaderHeight () {
         return typeof this.headerHeight === "number" ? this.headerHeight : parseInt(this.headerHeight)
@@ -186,12 +176,12 @@
         required:
           false
       },
-      cellHeight: {
-        type: [Number, String],
-        default: 20
+      maxCellHeight: {
+        type: Number,
+        default: 50
       },
-      childCellHeight: {
-        type: [Number, String],
+      maxChildCellHeight: {
+        type: Number,
         default: 20
       },
       headerHeight: {
@@ -212,10 +202,6 @@
         default: () => {
           //console.log('markRowIdFnc NOT provided to table')
         },
-      },
-      setHeaderWidthFnc: {
-        type: Function,
-        required: false,
       },
       cell: {
         type: Object,
@@ -253,6 +239,16 @@
           return {}
         },
       },
+      copySelectionToClipboard: {
+        type: Object,
+        default: () => {
+          return {}
+        },
+      },
+      setHoveredOverItemFnc: {
+        type: Function,
+        default: false,
+      },
     },
 
     watch: {
@@ -262,7 +258,7 @@
       items () {
         this.page = 1
       },
-    }
+    },
   }
 </script>
 
@@ -276,8 +272,10 @@
   }
 
   #table-footer {
-    background-color: #eee;
-    border: 1px solid;
+    background-color: #fff;
+    border-top: 2px solid #eee;
+    border-top-right-radius: 6px;
+    border-top-left-radius: 6px;
     padding-top: 5px !important;
     position: static;
     height: 65px;
@@ -285,25 +283,26 @@
     overflow: hidden;
   }
 
-  #total-number {
-    position: relative;
+  #table-footer > .flex > * {
     float: left;
-    font-size: 16px;
-    height: 40px;
-    padding: 7px 10px;
-    text-align: right;
-    margin: 8px;
+    height: 100%;
+  }
+
+  #table-footer > .flex > div.label {
+    position: relative;
+    top: 14px;
+    left: 20px;
   }
 
   .items-per-page {
-    top: -4px;
+    top: -15px;
     position: relative;
     float: left;
     font-size: 16px;
-    height: 70px;
-    padding: 8px 10px;
+    padding: 8px 30px 0 8px;
     text-align: right;
-    width: 230px;
+    width: 100px;
+    left: 20px;
   }
 
   .v-pagination {
@@ -311,6 +310,7 @@
     height: 70px;
     position: relative;
     top: -8px;
+    left: 200px;
   }
 </style>
 
@@ -339,8 +339,12 @@
   }
 
   .grid-row.grid-item--header > div {
-    border-top: 1px solid grey;
-    border-bottom: 1px solid grey;
+    border-bottom: 2px solid blue;
+    border-top: none;
+  }
+
+  .grid-row > .grid-item:first-child {
+    border-left: none;
   }
 
   .grid-item--header {
@@ -367,19 +371,7 @@
   }
 
   .grid-row:nth-child(even) .grid-item {
-    background-color: rgb(241, 241, 241);
-  }
-
-  .grid-row > .grid-item:first-child {
-    border-left: 1px solid gray;
-  }
-
-  .grid-row > .grid-item:last-child {
-    border-right: 1px solid gray;
-  }
-
-  .grid-row:last-child > .grid-item {
-    border-bottom: none;
+    background-color: rgba(241, 241, 241, 0.5);
   }
 
   /* in component toggle-show.children.vue */

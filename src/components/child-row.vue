@@ -2,6 +2,7 @@
   <div
     :key="'child-row-' + rowIdx + '-' + childIdx"
     class="grid-row child-row"
+    :style="{ maxHeight: maxChildCellHeight + 'px' }"
   >
     <div
       :style="{ width: '55px', left: 0 }"
@@ -20,7 +21,7 @@
     <div
       :class="{ 'grid-col--fixed-left': fixedLeftCols > headerIdx }"
       :key="'child-cell-' + rowIdx + childIdx + headerIdx"
-      :style="{ width: header.width + 'px', left: getLeftPosition(headerIdx), height: childCellHeight }"
+      :style="{ width: header.width + 'px', left: getLeftPosition(headerIdx), maxHeight: maxChildCellHeight + 'px' }"
       class="grid-item child-value"
       v-for="(header, headerIdx) of headers"
     >
@@ -70,10 +71,6 @@
         type: Number,
         required: true,
       },
-      childCellHeight: {
-        type: String,
-        required: true,
-      },
       fixedLeftCols: {
         type: Number,
         required: true,
@@ -89,6 +86,10 @@
       allowShowChildren: {
         type: Boolean,
         required: false,
+      },
+      maxChildCellHeight: {
+        type: Number,
+        default: 20
       },
       child: {
         type: Object,

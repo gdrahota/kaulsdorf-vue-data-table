@@ -4,7 +4,9 @@
       v-if="rowsAreSelectable"
       class="grid-item grid-col--fixed-left grid-item-system"
       :style="{ width: '55px', left: 0, height: headerHeight + 'px' }"
-    ></div>
+    >
+      <component :is="copySelectionToClipboard"/>
+    </div>
 
     <div
       v-if="allowShowChildren"
@@ -23,6 +25,7 @@
       <component
         :is="headerCell"
         :headers="headers"
+        :header="header"
         :headerIdx="headerIdx"
       />
     </div>
@@ -51,29 +54,6 @@
       },
     },
 
-    mounted () {
-      if (this.setHeaderWidthFnc) {
-        console.log('setHeaderWidthFnc')
-        window.setTimeout(() => {
-          this.headers.forEach((header, headerIdx) => {
-            const observer = new ResizeObserver(entries => entries.forEach(entry => {
-              const width = entry.target.offsetWidth
-              const minWidth = header.minWidth
-
-              if (width < minWidth) {
-                window.setTimeout(() => window.document.getElementById('header-' + headerIdx).style.width = minWidth + 'px', 200)
-                this.setHeaderWidthFnc({ headerIdx: headerIdx, width: minWidth })
-              } else {
-                this.setHeaderWidthFnc({ headerIdx: headerIdx, width: width })
-              }
-            }))
-
-            observer.observe(document.querySelector('#header-' + headerIdx))
-          })
-        }, 1000)
-      }
-    },
-
     props: {
       headers: {
         type: Array,
@@ -95,15 +75,17 @@
         type: Boolean,
         required: true,
       },
-      setHeaderWidthFnc: {
-        type: Function,
-        required: false,
-      },
       headerCell: {
         type: Object,
         default: () => {
           console.log('headerCell NOT provided to header-row')
         }
+      },
+      copySelectionToClipboard: {
+        type: Object,
+        default: () => {
+          return {}
+        },
       },
     },
   }
