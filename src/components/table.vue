@@ -247,7 +247,7 @@
       },
       setHoveredOverItemFnc: {
         type: Function,
-        default: false,
+        default: () => {},
       },
     },
 
