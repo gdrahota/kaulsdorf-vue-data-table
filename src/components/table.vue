@@ -278,7 +278,7 @@
     border-top-left-radius: 6px;
     padding-top: 5px !important;
     position: static;
-    height: 65px;
+    height: 55px;
     width: 100%;
     overflow: hidden;
   }
