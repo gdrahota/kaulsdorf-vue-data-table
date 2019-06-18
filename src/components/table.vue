@@ -1,7 +1,7 @@
 <template>
   <div :style="{ width: getControlWidth, 'max-height': getHeight }" id="table-wrapper">
     <div :class="classList" :style="{ width: getControlWidth, 'max-height': getHeight }" class="grid-container">
-      <div :style="{ 'max-height': getTableHeight }" class="grid">
+      <div class="grid">
 
         <header-row
           :allowShowChildren="allowShowChildren"
@@ -371,7 +371,7 @@
   }
 
   .grid-row:nth-child(even) .grid-item {
-    background-color: rgba(241, 241, 241, 0.5);
+    background-color: rgb(247, 247, 247);
   }
 
   /* in component toggle-show.children.vue */
