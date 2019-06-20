@@ -32,7 +32,7 @@
         :docId="docId"
         :numOfChildren="numOfChildren"
         :style="{ width: '110px' }"
-        :cellHeight="cellHeight"
+        :maxCellHeight="maxCellHeight"
       />
     </div>
 

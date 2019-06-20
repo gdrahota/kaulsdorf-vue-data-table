@@ -41,7 +41,7 @@
             :fixedLeftCols="fixedLeftCols"
             :headers="headers"
             :key="'child-doc-' + rowIdx + '-' + childIdx"
-            :maxChildCellHeight="maxChildCellHeight"
+            :max-child-cell-height="maxChildCellHeight"
             :rowIdx="rowIdx"
             :rowsAreSelectable="rowsAreSelectable"
             v-for="childIdx of Array.from(Array(item.children).keys())"
