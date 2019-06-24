@@ -2,7 +2,7 @@
   <div class="grid-row grid-item--header">
     <div
       v-if="rowsAreSelectable"
-      class="grid-item grid-col--fixed-left grid-item-system"
+      class="grid-item table-header grid-col--fixed-left"
       :style="{ width: '55px', left: 0, height: headerHeight + 'px' }"
     >
       <component :is="copySelectionToClipboard"/>
@@ -10,7 +10,7 @@
 
     <div
       v-if="allowShowChildren"
-      class="grid-item grid-col--fixed-left grid-item-system"
+      class="grid-item grid-col--fixed-left table-header"
       :style="{ width: '111px', left: '55px', height: headerHeight + 'px' }"
     ></div>
 
