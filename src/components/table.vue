@@ -53,6 +53,9 @@
 
     <v-layout class="elevation-2" id="table-footer" row wrap>
       <v-flex>
+        <div id="show-record-total-in-footer" v-if="showRecordTotalInFooter">
+          {{ items.length }}&nbsp;Einträge
+        </div>
         <div class="label">Zeilen pro Seite:</div>
         <v-select
           :items="[10, 20, 50, 100]"
@@ -249,6 +252,10 @@
         type: Function,
         default: () => {},
       },
+      showRecordTotalInFooter: {
+        type: Boolean,
+        default: true,
+      }
     },
 
     watch: {
@@ -276,11 +283,11 @@
     border-top: 2px solid #eee;
     border-top-right-radius: 6px;
     border-top-left-radius: 6px;
+    height: 55px;
     padding-top: 5px !important;
     position: static;
-    height: 55px;
-    width: 100%;
     overflow: hidden;
+    width: 100%;
   }
 
   #table-footer > .flex > * {
@@ -289,28 +296,36 @@
   }
 
   #table-footer > .flex > div.label {
+    left: 20px;
     position: relative;
     top: 14px;
+  }
+
+
+  #table-footer > .flex > #show-record-total-in-footer {
     left: 20px;
+    padding-right: 100px;
+    position: relative;
+    top: 14px;
   }
 
   .items-per-page {
-    top: -15px;
-    position: relative;
     float: left;
-    font-size: 16px;
-    padding: 8px 30px 0 8px;
-    text-align: right;
-    width: 100px;
+    font-size: 14px;
     left: 20px;
+    padding: 8px 30px 0 8px;
+    position: relative;
+    text-align: right;
+    top: -4px;
+    width: 100px;
   }
 
   .v-pagination {
     float: left;
     height: 70px;
-    position: relative;
-    top: -8px;
     left: 200px;
+    position: relative;
+    top: -4px;
   }
 </style>
 
