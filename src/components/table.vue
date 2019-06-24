@@ -433,7 +433,7 @@
   }
 
   .child-row > * {
-    background-color: rgba(238, 238, 238, 0.5);
+    background-color: rgb(238, 238, 238);
     text-align: right;
     padding: 0;
   }
