@@ -6,14 +6,14 @@
   >
     <div
       :style="{ width: '55px', left: 0 }"
-      class="grid-item grid-item--header grid-col--fixed-left"
+      class="grid-item grid-col--fixed-left"
       v-if="rowsAreSelectable"
     >
     </div>
 
     <div
       :style="{ width: '111px', left: '55px' }"
-      class="grid-item grid-item--header grid-col--fixed-left"
+      class="grid-item grid-col--fixed-left"
       v-if="allowShowChildren"
     >
     </div>
