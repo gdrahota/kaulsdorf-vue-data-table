@@ -416,7 +416,7 @@
     cursor: ew-resize;
   }
 
-  .active {
+  .is-active {
     background-color: aliceblue;
     border: 2px solid #1976d2;
   }
