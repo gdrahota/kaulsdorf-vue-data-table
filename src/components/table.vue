@@ -345,7 +345,7 @@
   }
 
   .grid > .grid-row {
-    display: flex;
+    /*display: flex;*/
     flex-wrap: nowrap;
   }
 
