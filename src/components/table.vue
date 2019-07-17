@@ -60,9 +60,7 @@
         <v-select
           :items="[10, 20, 50, 100]"
           class="items-per-page"
-          dense
           hide-details
-          solo-
           v-model="itemsPerPageParam"
         ></v-select>
         <v-pagination
@@ -312,11 +310,11 @@
   .items-per-page {
     float: left;
     font-size: 14px;
-    left: 20px;
-    padding: 8px 30px 0 8px;
+    left: 24px;
+    padding: 0px 30px 0 8px;
     position: relative;
     text-align: right;
-    top: -4px;
+    top: -8px;
     width: 100px;
   }
 
