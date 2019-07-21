@@ -1,6 +1,6 @@
 <template>
-  <div :style="{ width: getControlWidth, 'max-height': getHeight }" id="table-wrapper">
-    <div :class="classList" :style="{ width: getControlWidth, 'max-height': getHeight }" class="grid-container">
+  <div :style="{ width: getControlWidth, 'height': getHeight }" id="table-wrapper">
+    <div :class="classList" :style="{ width: getControlWidth, 'height': getHeight }" class="grid-container">
       <div class="grid">
 
         <header-row
