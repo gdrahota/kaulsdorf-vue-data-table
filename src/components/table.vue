@@ -384,7 +384,7 @@
   }
 
   .grid-row:nth-child(even) .grid-item {
-    background-color: rgb(247, 247, 247);
+    background-color: rgb(240, 240, 240);
   }
 
   /* in component toggle-show.children.vue */
