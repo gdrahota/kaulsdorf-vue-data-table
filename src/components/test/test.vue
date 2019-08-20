@@ -3,26 +3,26 @@
     <v-card-text>
       <div id="table-wrapper">
         <vue-table
-          :headers="headers"
-          :items="items"
-          :rowCount="getAll.length"
-          :width="1200"
-          :height="300"
-          :cell-height="110"
-          :child-cell-height="90"
-          fit-to-space
-          :fixedLeftCols="0"
-          allowShowChildren
-          @columnResized="resizeColumn"
-          rowsAreSelectable
-          :markRowIdFnc="markRowIdMutation"
-          :toggleShowChildrenFnc="toggleShowChildrenMutation"
-          :setHeaderWidthFnc="setHeaderWidthMutation"
           :cell="cell"
+          :cell-height="110"
           :child="child"
+          :child-cell-height="90"
+          :fixedLeftCols="0"
           :headerCell="headerCell"
+          :headers="headers"
+          :height="300"
+          :items="items"
+          :markRowIdFnc="markRowIdMutation"
+          :rowCount="getAll.length"
+          :setHeaderWidthFnc="setHeaderWidthMutation"
           :toggleSelectRow="toggleSelectRow"
           :toggleShowChildren="toggleShowChildren"
+          :toggleShowChildrenFnc="toggleShowChildrenMutation"
+          :width="1200"
+          @columnResized="resizeColumn"
+          allowShowChildren
+          fit-to-space
+          rowsAreSelectable
         />
       </div>
     </v-card-text>
@@ -37,7 +37,6 @@
   import Child from './child'
   import ToggleSelectRow from './toggle-select-row'
   import ToggleShowChildren from './toggle-show-children'
-
 
   export default {
     components: {
@@ -96,14 +95,10 @@
 </script>
 
 <style scoped>
-  /*#table-wrapper {*/
-    /*border: 1px solid #ddd;*/
-    /*background-color: white;*/
-    /*height: calc(100vh - 200px);*/
-    /*left: 0px;*/
-    /*position: relative;*/
-    /*width: 100%;*/
-  /*}*/
+  .grid > .grid-row {
+    float: left;
+    clear: left;
+  }
 
   .table-header {
     background-color: white;
@@ -115,7 +110,7 @@
   }
 
   .cell-value.grid-item {
-    padding: 15px 10px;
+    /*padding: 15px 10px;*/
     text-align: right;
   }
 

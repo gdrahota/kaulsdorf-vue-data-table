@@ -80,17 +80,6 @@
       save (value) {
         this.setRowValue({ id: this.docId, attrName: this.header.attr, value })
       },
-      getLeftPosition (colPosition) {
-        let left = 0
-        left += this.rowsAreSelectable ? 55 : 0
-        left += this.allowShowChildren ? 110 : 0
-        for (let i = 0; i <= (colPosition - 1); i++) {
-          if (this.fixedLeftCols > i) {
-            left += this.headers[i].width
-          }
-        }
-        return left + 'px'
-      },
     },
 
     props: {
