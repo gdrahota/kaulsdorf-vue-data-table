@@ -343,7 +343,9 @@
   }
 
   .grid > .grid-row {
-    display: inline-flex;
+    float: left;
+    clear: left;
+    display: flex;
     flex-wrap: nowrap;
   }
 

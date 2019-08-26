@@ -98,6 +98,7 @@
   .grid > .grid-row {
     float: left;
     clear: left;
+    display: flex;
   }
 
   .table-header {
