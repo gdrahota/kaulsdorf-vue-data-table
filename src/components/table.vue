@@ -270,7 +270,6 @@
 <style scoped>
   #table-wrapper {
     background-color: white;
-    height: calc(100vh - 180px);
     left: 0px;
     position: relative;
     width: 100%;
