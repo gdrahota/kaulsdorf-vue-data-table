@@ -42,7 +42,7 @@
         :key="'cell-' + rowIdx + '-' + headerIdx"
         class="grid-item cell-value"
         :class="{ 'grid-col--fixed-left': fixedLeftCols > headerIdx, 'is-active': getMarkedRowIdGetter === rowIdx }"
-        :style="{ width: header.width + 'px', left: getLeftPosition(headerIdx), maxHeight: maxCellHeight + 'px' }"
+        :style="{ width: header.width + 'px', left: getLeftPosition(headerIdx) }"
       >
         <component
           :is="cell"
