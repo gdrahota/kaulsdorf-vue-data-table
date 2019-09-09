@@ -1,56 +1,57 @@
 <template>
   <div
-    class="grid-row"
-    :style="{ maxHeight: maxCellHeight + 'px' }"
     :key="'row-' + rowIdx"
+    :style="{ maxHeight: maxCellHeight + 'px' }"
     @click="markRowIdFnc(docId)"
     @mouseenter="setHoveredOverItemFnc(docId)"
+    class="grid-row"
   >
 
     <!-- select row -->
     <div
-      v-if="rowsAreSelectable"
-      class="grid-item grid-col--fixed-left"
       :style="{ width: '55px', left: '0' }"
+      class="grid-item grid-col--fixed-left"
+      v-if="rowsAreSelectable"
     >
       <component
-        :is="toggleSelectRow"
         :docId="docId"
+        :is="toggleSelectRow"
       />
     </div>
 
     <!-- show children -->
     <div
-      v-if="allowShowChildren"
-      class="grid-item grid-col--fixed-left toggle-show-children"
-      :style="{ left: '55px' }"
       :docId="docId"
+      :style="{ left: '55px' }"
+      class="grid-item grid-col--fixed-left toggle-show-children"
+      v-if="allowShowChildren"
     >
       <component
-        :is="toggleShowChildren"
-        :rowIdx="rowIdx"
         :docId="docId"
-        :numOfChildren="numOfChildren"
-        :style="{ width: '110px' }"
+        :is="toggleShowChildren"
         :maxCellHeight="maxCellHeight"
+        :numOfChildren="numOfChildren"
+        :rowIdx="rowIdx"
+        :style="{ width: '110px' }"
       />
     </div>
 
     <!-- data cells -->
     <template v-for="(header, headerIdx) of headers">
       <div
-        :key="'cell-' + rowIdx + '-' + headerIdx"
-        class="grid-item cell-value"
         :class="{ 'grid-col--fixed-left': fixedLeftCols > headerIdx, 'is-active': getMarkedRowIdGetter === rowIdx }"
-        :style="{ width: header.width + 'px', left: getLeftPosition(headerIdx) }"
+        :key="'cell-' + rowIdx + '-' + headerIdx"
+        :style="{ width: header.width + 'px', left: getLeftPosition(headerIdx), maxHeight: maxCellHeight + 'px' }"
+        class="grid-item cell-value"
       >
         <component
-          :is="cell"
-          :headers="headers"
+          :docId="docId"
           :header="header"
           :headerIdx="headerIdx"
+          :headers="headers"
+          :is="cell"
+          :item="item"
           :rowIdx="rowIdx"
-          :docId="docId"
         />
       </div>
     </template>
@@ -80,6 +81,10 @@
       },
       docId: {
         type: [Number, String],
+        required: true,
+      },
+      item: {
+        type: Object,
         required: true,
       },
       numOfChildren: {

@@ -18,9 +18,11 @@
           <row
             :allowShowChildren="allowShowChildren"
             :cell="cell"
+            :class="item.oddOrEvenClass"
             :docId="item.id"
             :fixedLeftCols="fixedLeftCols"
             :headers="headers"
+            :item="item"
             :key="'doc-' + rowIdx"
             :markRowIdFnc="markRowIdFnc"
             :maxCellHeight="maxCellHeight"
@@ -267,14 +269,7 @@
   }
 </script>
 
-<style scoped>
-  #table-wrapper {
-    background-color: white;
-    left: 0px;
-    position: relative;
-    width: 100%;
-  }
-
+<style>
   #table-footer {
     background-color: #fff;
     border-top: 2px solid #eee;
@@ -324,9 +319,7 @@
     position: relative;
     top: -4px;
   }
-</style>
 
-<style>
   #paging > .page-of-pages {
     float: left;
     font-size: 16px;
@@ -382,10 +375,6 @@
     position: sticky;
     top: 0;
     z-index: 1;
-  }
-
-  .grid-row:nth-child(even) .grid-item {
-    background-color: rgb(240, 240, 240);
   }
 
   /* in component toggle-show.children.vue */
