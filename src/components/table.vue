@@ -174,6 +174,10 @@
         type: Number,
         default: 20
       },
+      setItemsPerPage: {
+        type: Function,
+        default: () => {},
+      },
       classList: {
         type: String,
         required:
@@ -259,8 +263,9 @@
     },
 
     watch: {
-      itemsPerPageParam () {
+      itemsPerPageParam (itemsPerPage) {
         this.page = 1
+        this.setItemsPerPage(itemsPerPage)
       },
       items () {
         this.page = 1
