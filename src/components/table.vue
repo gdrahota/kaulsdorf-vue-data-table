@@ -263,9 +263,14 @@
     },
 
     watch: {
+      itemsPerPage (itemsPerPage) {
+        this.itemsPerPageParam = itemsPerPage
+      },
       itemsPerPageParam (itemsPerPage) {
-        this.page = 1
-        this.setItemsPerPage(itemsPerPage)
+        if (this.itemsPerPage !== this.itemsPerPageParam) {
+          this.page = 1
+          this.setItemsPerPage(itemsPerPage)
+        }
       },
       items () {
         this.page = 1
