@@ -53,7 +53,7 @@
       </div>
     </div>
 
-    <v-layout class="elevation-2" id="table-footer" row wrap>
+    <v-layout class="elevation-2" id="table-footer" row v-if="showFooter" wrap>
       <v-flex>
         <div id="show-record-total-in-footer" v-if="showRecordTotalInFooter">
           {{ items.length }}&nbsp;Einträge
@@ -64,13 +64,13 @@
           class="items-per-page"
           hide-details
           v-model="itemsPerPageParam"
-        ></v-select>
+        />
         <v-pagination
           :length="getPages"
           :total-visible="9"
           circle
           v-model="page"
-        ></v-pagination>
+        />
       </v-flex>
     </v-layout>
   </div>
@@ -100,11 +100,7 @@
     computed: {
       getHeight () {
         const height = this.fitToSpace ? '100%' : this.height + 'px'
-        return 'calc(' + height + ' - 50px)'
-      },
-      getTableHeight () {
-        const height = this.fitToSpace ? '100%' : this.height + 'px'
-        return 'calc(' + height + ' - 50px)'
+        return this.showFooter ? 'calc(' + height + ' - 50px)' : height
       },
       getControlWidth () {
         return this.fitToSpace ? '100%' : this.width ? this.width + 'px' : '100%'
@@ -124,7 +120,7 @@
       return {
         page: 1,
         start: null,
-        itemsPerPageParam: this.itemsPerPage,
+        itemsPerPageParam: this.showFooter ? this.itemsPerPage : -1,
       }
     },
 
@@ -197,8 +193,7 @@
       },
       allowShowChildren: {
         type: Boolean,
-        default:
-          false
+        default: false
       },
       rowsAreSelectable: {
         type: Boolean,
@@ -206,39 +201,27 @@
       },
       markRowIdFnc: {
         type: Function,
-        default: () => {
-          //console.log('markRowIdFnc NOT provided to table')
-        },
+        default: () => {},
       },
       cell: {
         type: Object,
-        default: () => {
-          //console.log('cell NOT provided to table')
-        }
+        default: () => {}
       },
       child: {
         type: Object,
-        default: () => {
-          //console.log('child NOT provided to table')
-        }
+        default: () => {}
       },
       headerCell: {
         type: Object,
-        default: () => {
-          //console.log('headerCell NOT provided to table')
-        }
+        default: () => {}
       },
       toggleShowChildren: {
         type: Object,
-        default: () => {
-          //console.log('toggleShowChildren NOT provided to table')
-        }
+        default: () => {}
       },
       toggleSelectRow: {
         type: Object,
-        default: () => {
-          //console.log('toggleSelectRow NOT provided to table')
-        }
+        default: () => {}
       },
       showThisChildren: {
         type: Object,
@@ -259,7 +242,11 @@
       showRecordTotalInFooter: {
         type: Boolean,
         default: true,
-      }
+      },
+      showFooter: {
+        type: Boolean,
+        default: true,
+      },
     },
 
     watch: {

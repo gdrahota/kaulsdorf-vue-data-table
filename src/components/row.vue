@@ -46,7 +46,7 @@
       >
         <component
           :docId="docId"
-          :header="header"
+          :header="header"otherChangeOrders
           :headerIdx="headerIdx"
           :headers="headers"
           :is="cell"
