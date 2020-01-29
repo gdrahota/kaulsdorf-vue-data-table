@@ -82,15 +82,6 @@
   import ChildRow from './child-row'
 
   export default {
-    beforeUpdate () {
-      console.log('kaulsdorf-vue-data-table => Vue instance beforeUpdate')
-    },
-
-    created () {
-      this.start = new Date()
-      console.log('kaulsdorf-vue-data-table => Vue instance created')
-    },
-
     components: {
       HeaderRow,
       Row,
@@ -98,34 +89,33 @@
     },
 
     computed: {
-      getHeight () {
+      getHeight() {
         const height = this.fitToSpace ? '100%' : this.height + 'px'
         return this.showFooter ? 'calc(' + height + ' - 50px)' : height
       },
-      getControlWidth () {
+      getControlWidth() {
         return this.fitToSpace ? '100%' : this.width ? this.width + 'px' : '100%'
       },
-      getHeaderHeight () {
-        return typeof this.headerHeight === "number" ? this.headerHeight : parseInt(this.headerHeight)
+      getHeaderHeight() {
+        return typeof this.headerHeight === 'number' ? this.headerHeight : parseInt(this.headerHeight)
       },
-      getItems () {
+      getItems() {
         return this.items.slice((this.page - 1) * this.itemsPerPageParam, this.page * this.itemsPerPageParam)
       },
-      getPages () {
+      getPages() {
         return Math.ceil(this.items.length / this.itemsPerPageParam)
       },
     },
 
-    data () {
+    data() {
       return {
         page: 1,
-        start: null,
         itemsPerPageParam: this.showFooter ? this.itemsPerPage : -1,
       }
     },
 
     methods: {
-      getLeftPosition (colPosition) {
+      getLeftPosition(colPosition) {
         let left = 0
         left += this.rowsAreSelectable ? 55 : 0
         left += this.allowShowChildren ? 111 : 0
@@ -250,17 +240,19 @@
     },
 
     watch: {
-      itemsPerPage (itemsPerPage) {
+      itemsPerPage(itemsPerPage) {
         this.itemsPerPageParam = itemsPerPage
       },
-      itemsPerPageParam (itemsPerPage) {
+      itemsPerPageParam(itemsPerPage) {
         if (this.itemsPerPage !== this.itemsPerPageParam) {
           this.page = 1
           this.setItemsPerPage(itemsPerPage)
         }
       },
-      items () {
-        this.page = 1
+      items(newItems, oldItems) {
+        if (newItems.length !== oldItems.length) {
+          this.page = 1
+        }
       },
     },
   }
