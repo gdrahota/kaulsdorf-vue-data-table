@@ -1,6 +1,6 @@
 {
 	"name": "kaulsdorf-vue-data-table",
-	"version": "1.3.25",
+	"version": "1.3.26",
 	"private": false,
 	"scripts": {
 		"build": "vue-cli-service build",
