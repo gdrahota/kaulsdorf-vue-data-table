@@ -55,6 +55,15 @@
 
     <div id="table-footer" v-if="showFooter">
       <span id="number-of-records" v-if="showRecordTotalInFooter" v-text="`${ items.length } Einträge`"/>
+
+      <v-pagination
+        :length="getPages"
+        :total-visible="9"
+        circle
+        id="table-pagination"
+        v-model="page"
+      />
+
       <span id="items-per-page-label">Zeilen pro Seite:</span>
       <span id="items-per-page">
         <v-select
@@ -64,16 +73,6 @@
           v-model="itemsPerPageParam"
         />
       </span>
-
-      <!--      <span>-->
-      <v-pagination
-        :length="getPages"
-        :total-visible="9"
-        circle
-        id="table-pagination"
-        v-model="page"
-      />
-      <!--      </span>-->
     </div>
   </div>
 </template>
