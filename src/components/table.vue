@@ -53,26 +53,28 @@
       </div>
     </div>
 
-    <v-layout class="elevation-2" id="table-footer" row v-if="showFooter" wrap>
-      <v-flex>
-        <div id="show-record-total-in-footer" v-if="showRecordTotalInFooter">
-          {{ items.length }}&nbsp;Einträge
-        </div>
-        <div class="label">Zeilen pro Seite:</div>
+    <div id="table-footer" v-if="showFooter">
+      <span id="number-of-records" v-if="showRecordTotalInFooter" v-text="`${ items.length } Einträge`"/>
+      <span id="items-per-page-label">Zeilen pro Seite:</span>
+      <span id="items-per-page">
         <v-select
           :items="[10, 20, 50, 100]"
-          class="items-per-page"
           hide-details
+          style="width: 60px"
           v-model="itemsPerPageParam"
         />
-        <v-pagination
-          :length="getPages"
-          :total-visible="9"
-          circle
-          v-model="page"
-        />
-      </v-flex>
-    </v-layout>
+      </span>
+
+      <!--      <span>-->
+      <v-pagination
+        :length="getPages"
+        :total-visible="9"
+        circle
+        id="table-pagination"
+        v-model="page"
+      />
+      <!--      </span>-->
+    </div>
   </div>
 </template>
 
@@ -264,6 +266,7 @@
     border-top: 2px solid #eee;
     border-top-right-radius: 6px;
     border-top-left-radius: 6px;
+    display: flex;
     height: 55px;
     padding-top: 5px !important;
     position: static;
@@ -271,55 +274,35 @@
     width: 100%;
   }
 
-  #table-footer > .flex > * {
+  #table-footer > span {
     float: left;
-    height: 100%;
-  }
-
-  #table-footer > .flex > div.label {
-    left: 20px;
     position: relative;
-    top: 14px;
   }
 
-
-  #table-footer > .flex > #show-record-total-in-footer {
-    left: 20px;
-    padding-right: 100px;
-    position: relative;
-    top: 14px;
+  #number-of-records {
+    padding: 12px 18px;
+    width: 170px;
   }
 
-  .items-per-page {
-    float: left;
+  #items-per-page-label {
     font-size: 14px;
-    left: 24px;
-    padding: 0px 30px 0 8px;
-    position: relative;
+    padding: 12px 18px;
     text-align: right;
-    top: -8px;
+    width: 200px;
+  }
+
+  #items-per-page {
+    top: -10px;
     width: 100px;
   }
 
-  .v-pagination {
-    float: left;
-    height: 70px;
-    left: 200px;
-    position: relative;
-    top: -4px;
-  }
-
-  #paging > .page-of-pages {
-    float: left;
-    font-size: 16px;
-    top: -5px !important;
-    position: relative;
-    padding-left: 20px;
-    padding-right: 20px;
+  #table-pagination {
+    top: -10px;
+    left: 0 !important;
   }
 
   .grid-container {
-    display: grid; /* This is a (hacky) way to make the .grid element size to fit its content */
+    display: grid;
     overflow: auto;
   }
 

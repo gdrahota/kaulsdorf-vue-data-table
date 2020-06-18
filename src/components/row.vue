@@ -46,12 +46,12 @@
       >
         <component
           :docId="docId"
-          :header="header"otherChangeOrders
-          :headerIdx="headerIdx"
+          :header="header" :headerIdx="headerIdx"
           :headers="headers"
           :is="cell"
           :item="item"
           :rowIdx="rowIdx"
+          otherChangeOrders
         />
       </div>
     </template>
@@ -61,7 +61,7 @@
 <script>
   export default {
     methods: {
-      getLeftPosition (colPosition) {
+      getLeftPosition(colPosition) {
         let left = 0
         left += this.rowsAreSelectable ? 55 : 0
         left += this.allowShowChildren ? 111 : 0
