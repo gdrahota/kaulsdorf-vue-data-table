@@ -248,6 +248,10 @@ export default {
       type: Number,
       required: false,
     },
+    setPageFnc: {
+      type: Function,
+      default: () => {},
+    }
   },
 
   watch: {
@@ -265,6 +269,10 @@ export default {
         this.page = 1
       }
     },
+    page(newPage) {
+      console.log('set page', newPage)
+      this.setPageFnc(newPage)
+    }
   },
 }
 </script>
