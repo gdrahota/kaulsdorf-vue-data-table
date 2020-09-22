@@ -1,6 +1,6 @@
 <template>
-  <div id="table-wrapper" :class="classList" :style="{ width: getControlWidth }">
-    <div :style="{ width: getControlWidth }" class="grid-container" style="height: calc(100vh - 250px)">
+  <div id="table-wrapper" :class="classList" :style="{ width: getControlWidth, height: controlHeight }">
+    <div :style="{ width: getControlWidth, height: rowsAreaHeight }" class="grid-container">
       <div class="grid">
 
         <header-row
@@ -90,7 +90,10 @@ export default {
   },
 
   computed: {
-    getHeight() {
+    controlHeight() {
+      return this.fitToSpace ? '100%' : this.height + 'px'
+    },
+    rowsAreaHeight() {
       const height = this.fitToSpace ? '100%' : this.height + 'px'
       return this.showFooter ? 'calc(' + height + ' - 50px)' : height
     },
