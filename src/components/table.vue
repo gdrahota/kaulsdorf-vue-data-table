@@ -54,7 +54,7 @@
     </div>
 
     <div v-if="showFooter" id="table-footer">
-      <span v-if="showRecordTotalInFooter" id="number-of-records" v-text="`${ getNumberOfItems } Zeilen`"/>
+      <span v-if="showRecordTotalInFooter" id="number-of-records">{{ getNumberOfItems | number }} Zeilen</span>
 
       <v-pagination
         id="table-pagination"
