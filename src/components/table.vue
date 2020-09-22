@@ -104,6 +104,10 @@ export default {
       return typeof this.headerHeight === 'number' ? this.headerHeight : parseInt(this.headerHeight)
     },
     getItems() {
+      if (this.numberOfItems) {
+        return this.items
+      }
+
       return this.items.slice((this.page - 1) * this.itemsPerPageParam, this.page * this.itemsPerPageParam)
     },
     getNumberOfItems() {
@@ -260,17 +264,11 @@ export default {
     },
     itemsPerPageParam(itemsPerPage) {
       if (this.itemsPerPage !== this.itemsPerPageParam) {
-        this.page = 1
         this.setItemsPerPage(itemsPerPage)
-      }
-    },
-    items(newItems, oldItems) {
-      if (newItems.length !== oldItems.length) {
         this.page = 1
       }
     },
     page(newPage) {
-      console.log('set page', newPage)
       this.setPageFnc(newPage)
     }
   },
