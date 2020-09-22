@@ -51,7 +51,6 @@
           :is="cell"
           :item="item"
           :rowIdx="rowIdx"
-          otherChangeOrders
         />
       </div>
     </template>
