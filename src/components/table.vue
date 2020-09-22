@@ -54,7 +54,7 @@
     </div>
 
     <div v-if="showFooter" id="table-footer">
-      <span v-if="showRecordTotalInFooter" id="number-of-records" v-text="`${ items.length } Einträge`"/>
+      <span v-if="showRecordTotalInFooter" id="number-of-records" v-text="`${ getNumberOfItems } Zeilen`"/>
 
       <v-pagination
         id="table-pagination"
@@ -103,9 +103,11 @@ export default {
     getItems() {
       return this.items.slice((this.page - 1) * this.itemsPerPageParam, this.page * this.itemsPerPageParam)
     },
+    getNumberOfItems() {
+      return this.numberOfItems ? this.numberOfItems : this.items.length
+    },
     getPages() {
-      const numberIfItems = this.numberOfItems ? this.numberOfItems : this.items.length
-      return Math.ceil(numberIfItems / this.itemsPerPageParam)
+      return Math.ceil(this.getNumberOfItems / this.itemsPerPageParam)
     },
   },
 
