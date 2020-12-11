@@ -19,14 +19,14 @@
             :key="'doc-' + rowIdx"
             :allowShowChildren="allowShowChildren"
             :cell="cell"
-            :class="item.oddOrEvenClass"
+            :class="getRowClasses(item)"
             :docId="item.id"
             :fixedLeftCols="fixedLeftCols"
             :headers="headers"
             :item="item"
             :markRowIdFnc="markRowIdFnc"
             :maxCellHeight="maxCellHeight"
-            :numOfChildren="item.children"
+            :numOfChildren="item.children.length"
             :rowIdx="rowIdx"
             :rowsAreSelectable="rowsAreSelectable"
             :setHoveredOverItemFnc="setHoveredOverItemFnc"
@@ -36,12 +36,13 @@
 
           <!--main row children -->
           <child-row
-            v-for="childIdx of Array.from(Array(item.children).keys())"
-            v-if="allowShowChildren && item.children > 0 && showThisChildren[item.id]"
+            v-for="(rowClass, childIdx) of item.children"
+            v-if="allowShowChildren && item.children.length > 0 && showThisChildren[item.id]"
             :key="'child-doc-' + rowIdx + '-' + childIdx"
             :allowShowChildren="allowShowChildren"
             :child="child"
             :childIdx="childIdx"
+            :class="rowClass"
             :docId="item.id"
             :fixedLeftCols="fixedLeftCols"
             :headers="headers"
@@ -136,6 +137,12 @@ export default {
         }
       }
       return left + 'px'
+    },
+    getRowClasses({ oddOrEvenClass, rowClass }) {
+      return [oddOrEvenClass, rowClass].filter(i => i).join(' ')
+    },
+    getChildRowClass({ rowClass }) {
+      return rowClass || ''
     },
   },
 
@@ -255,7 +262,7 @@ export default {
     setPageFnc: {
       type: Function,
       default: () => {},
-    }
+    },
   },
 
   watch: {
