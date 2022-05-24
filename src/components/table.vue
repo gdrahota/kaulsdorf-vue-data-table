@@ -105,7 +105,7 @@ export default {
       return typeof this.headerHeight === 'number' ? this.headerHeight : parseInt(this.headerHeight)
     },
     getItems() {
-      if (this.numberOfItems) {
+      if ( this.numberOfItems ) {
         return this.items
       }
 
@@ -121,27 +121,27 @@ export default {
 
   data() {
     return {
-      page: 1,
+      page: this.pageParam || 1,
       itemsPerPageParam: this.showFooter ? this.itemsPerPage : -1,
     }
   },
 
   methods: {
-    getLeftPosition(colPosition) {
+    getLeftPosition( colPosition ) {
       let left = 0
       left += this.rowsAreSelectable ? 55 : 0
       left += this.allowShowChildren ? 111 : 0
-      for (let i = 0; i <= (colPosition - 1); i++) {
-        if (this.fixedLeftCols > i) {
-          left += this.headers[i].width
+      for ( let i = 0; i <= (colPosition - 1); i++ ) {
+        if ( this.fixedLeftCols > i ) {
+          left += this.headers[ i ].width
         }
       }
       return left + 'px'
     },
-    getRowClasses({ oddOrEvenClass, rowClass }) {
-      return [oddOrEvenClass, rowClass].filter(i => i).join(' ')
+    getRowClasses( { oddOrEvenClass, rowClass } ) {
+      return [ oddOrEvenClass, rowClass ].filter(i => i).join(' ')
     },
-    getChildRowClass({ rowClass }) {
+    getChildRowClass( { rowClass } ) {
       return rowClass || ''
     },
   },
@@ -150,33 +150,33 @@ export default {
     headers: {
       type: Array,
       required:
-        true
+        true,
     },
     items: {
       type: Array,
       default:
-        () => []
+        () => [],
     },
     fitToSpace: {
       type: Boolean,
       default:
-        false
+        false,
     },
     height: {
-      type: [Number, String],
-      default: 500
+      type: [ Number, String ],
+      default: 500,
     },
     width: {
-      type: [Number, String],
+      type: [ Number, String ],
       required: false,
     },
     fixedLeftCols: {
       type: Number,
-      default: 0
+      default: 0,
     },
     itemsPerPage: {
       type: Number,
-      default: 20
+      default: 20,
     },
     setItemsPerPage: {
       type: Function,
@@ -185,23 +185,23 @@ export default {
     classList: {
       type: String,
       required:
-        false
+        false,
     },
     maxCellHeight: {
       type: Number,
-      default: 50
+      default: 50,
     },
     maxChildCellHeight: {
       type: Number,
-      default: 20
+      default: 20,
     },
     headerHeight: {
-      type: [Number, String],
-      default: 40
+      type: [ Number, String ],
+      default: 40,
     },
     allowShowChildren: {
       type: Boolean,
-      default: false
+      default: false,
     },
     rowsAreSelectable: {
       type: Boolean,
@@ -213,23 +213,23 @@ export default {
     },
     cell: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
     child: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
     headerCell: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
     toggleShowChildren: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
     toggleSelectRow: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
     showThisChildren: {
       type: Object,
@@ -263,21 +263,28 @@ export default {
       type: Function,
       default: () => {},
     },
+    pageParam: {
+      type: Number,
+      default: null,
+    },
   },
 
   watch: {
-    itemsPerPage(itemsPerPage) {
+    itemsPerPage( itemsPerPage ) {
       this.itemsPerPageParam = itemsPerPage
     },
-    itemsPerPageParam(itemsPerPage) {
-      if (this.itemsPerPage !== this.itemsPerPageParam) {
+    itemsPerPageParam( itemsPerPage ) {
+      if ( this.itemsPerPage !== this.itemsPerPageParam ) {
         this.setItemsPerPage(itemsPerPage)
         this.page = 1
       }
     },
-    page(newPage) {
-      this.setPageFnc(newPage)
-    }
+    items() {
+      this.page = 1
+    },
+    pageParam( value ) {
+      this.page = value
+    },
   },
 }
 </script>
