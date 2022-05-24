@@ -117,13 +117,24 @@ export default {
     getPages() {
       return Math.ceil(this.getNumberOfItems / this.itemsPerPageParam)
     },
-  },
-
-  data() {
-    return {
-      page: this.pageParam || 1,
-      itemsPerPageParam: this.showFooter ? this.itemsPerPage : -1,
-    }
+    page: {
+      get() {
+        return this.pageParam || 1
+      },
+      set( value ) {
+        this.setPageFnc(value)
+      },
+    },
+    itemsPerPageParam: {
+      get() {
+        return this.showFooter
+          ? this.itemsPerPage
+          : -1
+      },
+      set( value ) {
+        this.setItemsPerPage(value)
+      },
+    },
   },
 
   methods: {
