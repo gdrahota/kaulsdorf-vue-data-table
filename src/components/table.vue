@@ -105,7 +105,7 @@ export default {
       return typeof this.headerHeight === 'number' ? this.headerHeight : parseInt(this.headerHeight)
     },
     getItems() {
-      if ( this.numberOfItems ) {
+      if (this.numberOfItems) {
         return this.items
       }
 
@@ -121,7 +121,8 @@ export default {
       get() {
         return this.pageParam || 1
       },
-      set( value ) {
+      set(value) {
+        console.log('table set page to', value)
         this.setPageFnc(value)
       },
     },
@@ -131,28 +132,28 @@ export default {
           ? this.itemsPerPage
           : -1
       },
-      set( value ) {
+      set(value) {
         this.setItemsPerPage(value)
       },
     },
   },
 
   methods: {
-    getLeftPosition( colPosition ) {
+    getLeftPosition(colPosition) {
       let left = 0
       left += this.rowsAreSelectable ? 55 : 0
       left += this.allowShowChildren ? 111 : 0
-      for ( let i = 0; i <= (colPosition - 1); i++ ) {
-        if ( this.fixedLeftCols > i ) {
-          left += this.headers[ i ].width
+      for (let i = 0; i <= (colPosition - 1); i++) {
+        if (this.fixedLeftCols > i) {
+          left += this.headers[i].width
         }
       }
       return left + 'px'
     },
-    getRowClasses( { oddOrEvenClass, rowClass } ) {
-      return [ oddOrEvenClass, rowClass ].filter(i => i).join(' ')
+    getRowClasses({ oddOrEvenClass, rowClass }) {
+      return [oddOrEvenClass, rowClass].filter(i => i).join(' ')
     },
-    getChildRowClass( { rowClass } ) {
+    getChildRowClass({ rowClass }) {
       return rowClass || ''
     },
   },
@@ -174,11 +175,11 @@ export default {
         false,
     },
     height: {
-      type: [ Number, String ],
+      type: [Number, String],
       default: 500,
     },
     width: {
-      type: [ Number, String ],
+      type: [Number, String],
       required: false,
     },
     fixedLeftCols: {
@@ -207,7 +208,7 @@ export default {
       default: 20,
     },
     headerHeight: {
-      type: [ Number, String ],
+      type: [Number, String],
       default: 40,
     },
     allowShowChildren: {
@@ -281,19 +282,16 @@ export default {
   },
 
   watch: {
-    itemsPerPage( itemsPerPage ) {
+    itemsPerPage(itemsPerPage) {
       this.itemsPerPageParam = itemsPerPage
     },
-    itemsPerPageParam( itemsPerPage ) {
-      if ( this.itemsPerPage !== this.itemsPerPageParam ) {
+    itemsPerPageParam(itemsPerPage) {
+      if (this.showFooter && this.itemsPerPage !== this.itemsPerPageParam) {
         this.setItemsPerPage(itemsPerPage)
         this.page = 1
       }
     },
-    items() {
-      this.page = 1
-    },
-    pageParam( value ) {
+    pageParam(value) {
       this.page = value
     },
   },
