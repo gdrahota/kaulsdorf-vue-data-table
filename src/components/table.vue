@@ -122,7 +122,6 @@ export default {
         return this.pageParam || 1
       },
       set(value) {
-        console.log('table set page to', value)
         this.setPageFnc(value)
       },
     },
